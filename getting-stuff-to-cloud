@@ -55,5 +55,42 @@ curl localhost:9696/ping
 You'll need to use the API Token route. While Authenticating with the registry
 ```bash
 docker tag <my-image> registry.digitalocean.com/<my-registry>/<my-image>
-docker push registry.digitalocean.com/<my-registry>/<my-image>
+docker push registry.digitalocean.com/<my-registry>/<my-image>  
+```
+# Getting back to kubectl  
+```bash
+# confirm if cluster is up
+kubectl get nodes
+
+# what about the pods: They'll be some running definitely and they are required 
+kubectl get pods -A  
+```
+# Preparation  
+Get a deployments.yaml file that is generic. You can make this from visual studio code or from the documentation. Make
+sure you do the following:
+1. ensure that the **app**, **name** & ****is consistent e.g ping-deployment and the image has been tagged the right way. The trick is that 
+you should use the registry.digitalocean.com/<my-registry>/<my-image>
+2. Save the file and call it something like deploymnent.yaml
+3. Run. You may need to create a namespace to handle organisation better.  
+
+```bash
+kubectl create -f deployments.yaml
+```
+If you have issues it maybe that the container has been given authorization to run in your cluster. Head to the console
+and fix that with   
+Making sure that your cluster and the container registry are in the same region
+
+```bash
+kubectl describe nameofpod
+kubectl delete deploy ping-deployment
+```
+
+```bash
+kubecrl get pods -w
+```
+# Expose the app to the internet
+Make a service. See example
+
+```bash
+kubectl apply -f service.yaml
 ```
