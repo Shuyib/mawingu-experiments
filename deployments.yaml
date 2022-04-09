@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ping-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ping-deployment
+  template:
+    metadata:
+      labels:
+        app: ping-deployment
+    spec:
+      containers:
+      - name: ping-deployment
+        image: registry.digitalocean.com/<my-registry>/<my-image>
+        resources:
+          limits:
+            memory: "128Mi" # 128 megabytes
+            cpu: "50m" # not more than 
+        ports:
+        - containerPort: 9696

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ping-service
+  labels:
+    app: ping-deployment
+spec:
+  type: LoadBalancer
+  selector:
+    app: ping-deployment
+  ports:
+    - protocol: TCP
+      name: http
+      port: 9696
+      targetPort: 9696
