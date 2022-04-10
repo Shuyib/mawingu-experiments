@@ -86,7 +86,7 @@ kubectl delete deploy ping-deployment
 ```
 
 ```bash
-kubecrl get pods -w
+kubectl get pods -w
 ```
 # Expose the app to the internet
 Make a service. See example
