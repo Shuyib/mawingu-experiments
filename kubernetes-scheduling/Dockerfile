@@ -9,6 +9,7 @@ WORKDIR /app
 
 COPY ["Pipfile", "Pipfile.lock", "matmulsched.py", "./"]
 
-RUN pipenv install --system --deploy
+RUN pipenv install --deploy --system && \
+    rm -rf /root/.cache
 
 CMD ["python", "matmulsched.py"]
