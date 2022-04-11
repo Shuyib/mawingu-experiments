@@ -11,7 +11,7 @@ docker build -t dotproduct:v001 .
 
 # How to run the Docker image
 ```bash
-docker run -e -it --rm dotproduct:v001
+docker run -e TZ="Africa/Nairobi" -it --rm dotproduct:v001
 ```
 
 # Push the image to docker registry
