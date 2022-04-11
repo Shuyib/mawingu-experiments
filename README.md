@@ -2,7 +2,7 @@ This is a project that has various examples of how you can use kubernetes to run
 
 .  
 ├── getting-stuff-to-cloud.md - a summary of how its done of digital ocean.  
-├── kubernetes-scheduling - example where you run a cronjob every minutes: Here a job that does a dot product on multidimensional arrays made with numpy.  
+├── kubernetes-scheduling - example where you run a cronjob every 5 minutes: Here a job that does a dot product on multidimensional arrays made with numpy.  
 │   ├── deployments.yaml  
 │   ├── Dockerfile  
 │   ├── matmulsched.py  
