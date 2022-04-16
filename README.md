@@ -5,7 +5,7 @@ This is a project that has various examples of how you can use kubernetes to run
 ├── kubernetes-scheduling - example where you run a cronjob every 5 minutes: Here a job that does a dot product on multidimensional arrays made with numpy.  
 │   ├── deployments.yaml - manifest file that specifies instructions that will be given to the kubernetes cluster. It is a cron job meaning that it will run after a certain interval.  
 │   ├── Dockerfile - a file that runs the whole application.  
-│   ├── matmulsched.py - Python script that does records the timestamp before the dot product is run and wait for a few minutes and stops.  
+│   ├── matmulsched.py - Python script that records the timestamp before the dot product is run and wait for a few minutes and stops.  
 │   ├── Pipfile - contains the requirements of the project as well as the python version.  
 │   ├── Pipfile.lock - Just freezes the requirements for the project.  
 │   └── README.md - Summary of what the project is about and how to run it.  
