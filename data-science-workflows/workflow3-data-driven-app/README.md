@@ -2,6 +2,8 @@ This is a project that illustrated a scenario that a user may face in practice. 
 
 See **plot_timeseries.py** for more information.  
 
+This is an interesting use case since the data loader is directly specified in the container. Mimicking an already existing pipeline to get data.  
+
 # How to build Docker image
 
 ```bash
