@@ -6,7 +6,7 @@ This has quite a number of usecases in the real world especially in exposing Com
 # How to build Docker image  
 
 ```bash
-docker build -t workflow3-data-science-api .
+docker build -t workflow4-data-science-api .
 ```
 
 # Reduce the size of the image  
