@@ -11,8 +11,19 @@ LABEL maintainer="Aly Sivji <alysivji@gmail.com>" \
 # Set the working directory to /app
 WORKDIR /app
 
+
+# ensures that the python output is sent to the terminal without buffering
+ENV PYTHONUNBUFFERED=TRUE
+
+
 # Copy the current directory contents into the container at /app
 COPY . /app
+
+# make a virtual environment
+RUN python3 -m venv iris-app
+
+# activate virtual environment
+CMD source iris-app/bin/activate
 
 # pip install
 RUN pip --no-cache-dir install -r /app/requirements.txt
