@@ -7,7 +7,7 @@ This is an interesting use case since the data loader is directly specified in t
 # How to build Docker image
 
 ```bash
-docker build -t workflow4-data-science-app .
+docker build -t workflow3-data-science-app .
 ```
 
 # Reduce the size of the image
