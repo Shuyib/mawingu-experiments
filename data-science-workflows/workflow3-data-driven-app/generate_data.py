@@ -6,7 +6,7 @@ import time
 # documentation was made with pyment e.g pyment -w -o numpydoc create_dataframe.py
 def create_dataframe(timer_interval):
     """make a streaming dataset that makes a random column called y sampled from a normal distribution and store it data folder and
-    call the index column y. Change the interval by specifying time_interval argument based on time.sleep python method
+    call the index column x. Change the interval at which data is stored by specifying time_interval argument based on time.sleep python method.
 
     Parameters
     ----------
