@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-'''Create live updating graph
-'''
+"""Create live updating graph
+"""
 
 # standard library
 from collections import namedtuple
@@ -15,14 +15,14 @@ import dash_core_components as dcc
 import dash_html_components as html
 import plotly.graph_objs as go
 
-TwoDPlot = namedtuple('TwoDPlot', ['x', 'y'])
+TwoDPlot = namedtuple("TwoDPlot", ["x", "y"])
 
 
 def tail_file(filename, nlines):
-    '''Return last nlines of file
+    """Return last nlines of file
 
     Adapted from https://gist.github.com/amitsaha/5990310
-    '''
+    """
     with open(filename) as qfile:
         qfile.seek(0, os.SEEK_END)
         endf = position = qfile.tell()
@@ -30,7 +30,7 @@ def tail_file(filename, nlines):
         while position >= 0:
             qfile.seek(position)
             next_char = qfile.read(1)
-            if next_char == "\n" and position != endf-1:
+            if next_char == "\n" and position != endf - 1:
                 linecnt += 1
 
             if linecnt == nlines:
@@ -44,8 +44,7 @@ def tail_file(filename, nlines):
 
 
 def get_data(filename, nlines=20):
-    '''Get data from tail of text file
-    '''
+    """Get data from tail of text file"""
 
     # read in file
     input_data = tail_file(filename, nlines)
@@ -53,7 +52,7 @@ def get_data(filename, nlines=20):
     y = []
     with io.StringIO(input_data) as f:
         for line in f:
-            items = line.strip().split(', ')
+            items = line.strip().split(", ")
             x.append(items[0])
             y.append(items[1])
 
@@ -62,30 +61,23 @@ def get_data(filename, nlines=20):
 
 app = dash.Dash()
 
-app.layout = html.Div([
-    dcc.Graph(
-        id='live-graph', 
-    ),
-    dcc.Interval(
-        id='interval-component',
-        interval=1*1000  # in milliseconds
-    )
-])
+app.layout = html.Div(
+    [
+        dcc.Graph(
+            id="live-graph",
+        ),
+        dcc.Interval(id="interval-component", interval=1 * 1000),  # in milliseconds
+    ]
+)
 
 
-@app.callback(Output('live-graph', 'figure'),
-              events=[Event('interval-component', 'interval')])
+@app.callback(
+    Output("live-graph", "figure"), events=[Event("interval-component", "interval")]
+)
 def update_graph():
-    result = get_data('data/data.csv', nlines=200)
-    return {
-        'data': [
-            go.Scatter(
-                x=result.x,
-                y=result.y
-            )
-        ]
-    }
+    result = get_data("data/data.csv", nlines=200)
+    return {"data": [go.Scatter(x=result.x, y=result.y)]}
 
 
-if __name__ == '__main__':
-    app.run_server(host='0.0.0.0')
+if __name__ == "__main__":
+    app.run_server(host="0.0.0.0")
