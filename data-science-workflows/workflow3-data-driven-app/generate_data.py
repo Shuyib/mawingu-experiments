@@ -34,5 +34,5 @@ def create_dataframe(timer_interval):
         print(df)
 
 
-if __name__ == "main":
-    create_dataframe(1)
+if __name__ == "__main__":
+    create_dataframe(timer_interval=1)

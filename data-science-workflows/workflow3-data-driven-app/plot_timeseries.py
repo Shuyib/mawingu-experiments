@@ -54,7 +54,7 @@ def get_data(filename, nlines=20):
         for line in f:
             items = line.strip().split(", ")
             x.append(items[0])
-            y.append(items[1])
+            y.append(items[-1])
 
     return TwoDPlot(x, y)
 
@@ -66,7 +66,7 @@ app.layout = html.Div(
         dcc.Graph(
             id="live-graph",
         ),
-        dcc.Interval(id="interval-component", interval=1 * 1000),  # in milliseconds
+        dcc.Interval(id="interval-component", interval=2000),  # in milliseconds
     ]
 )
 
@@ -75,7 +75,7 @@ app.layout = html.Div(
     Output("live-graph", "figure"), events=[Event("interval-component", "interval")]
 )
 def update_graph():
-    result = get_data("data/data.csv", nlines=200)
+    result = get_data("data/data.csv", nlines=20)
     return {"data": [go.Scatter(x=result.x, y=result.y)]}
 
 
