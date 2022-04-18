@@ -19,10 +19,10 @@ ENV PYTHONUNBUFFERED=TRUE
 COPY . /app
 
 # create a virtual environment and activate it
-RUN python3 -m venv data_app
+RUN python3 -m venv streaming_dash_app
 
 # activate virtual environment
-CMD source data_app/bin/activate
+CMD source streaming_dash_app/bin/activate
 
 # pip install
 RUN pip --no-cache-dir install -r /app/requirements.txt

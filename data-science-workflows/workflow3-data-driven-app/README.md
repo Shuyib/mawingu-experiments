@@ -6,8 +6,15 @@ This is an interesting use case since the data loader is directly specified in t
 
 # How to build Docker image
 
+For the generate data script
+
+
 ```bash
-docker build -t workflow3-data-science-app .
+docker build -t generate_data -f dockerfile_generatedata:v0 .
+```
+
+```bash
+docker build -t workflow3-data-science-app:v0 .
 ```
 
 # Reduce the size of the image
@@ -19,6 +26,12 @@ You'll need to install the [TAR](https://dockersl.im/) and install it
 
 
 # How to run the Docker container
+
+Specify shared named docker volume. To store the data somewhere and the other container will have access to it.  
+
+```bash
+ocker volume create storage
+```
 
 ```bash
 docker run -p 8050:8050 -v $(PWD):app/data --name plotly-timeseries-dashboard
