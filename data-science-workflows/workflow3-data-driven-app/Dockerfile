@@ -24,6 +24,9 @@ RUN python3 -m venv streaming_dash_app
 # activate virtual environment
 CMD source streaming_dash_app/bin/activate
 
+# update pip
+RUN pip --no-cache-dir install --upgrade pip 
+
 # pip install
 RUN pip --no-cache-dir install -r /app/requirements.txt
 

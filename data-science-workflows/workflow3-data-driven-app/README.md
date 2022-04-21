@@ -10,7 +10,7 @@ For the generate data script
 
 
 ```bash
-docker build -t generate_data -f dockerfile_generatedata:v0 .
+docker build -t generate_data:v0 -f Dockerfile_generatedata .
 ```
 
 ```bash
