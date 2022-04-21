@@ -4,7 +4,13 @@ See **plot_timeseries.py** for more information.
 
 This is an interesting use case since the data loader is directly specified in the container. Mimicking an already existing pipeline to get data.  
 
-# How to build Docker image
+# How to build Docker image  
+
+Make a shared volume first. This will be shared between containers. 
+
+```bash
+docker volume create data-app
+```
 
 For the generate data script
 
