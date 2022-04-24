@@ -27,7 +27,10 @@ docker build -t workflow3-data-science-app:v0 .
 You'll need to install the [TAR](https://dockersl.im/) and install it  
 
 ```bash
-#todo
+#generate data
+
+
+#workflow3-data-science-app
 ```
 
 
@@ -36,13 +39,18 @@ You'll need to install the [TAR](https://dockersl.im/) and install it
 Specify shared named docker volume. To store the data somewhere and the other container will have access to it.  
 
 ```bash
-ocker volume create storage
+docker run -d generate_data:v0 -v data-app:app/data
+```
+
+See if data is being populated in the directory  
+
+```bash
+docker exec nameofcontainer tail data/data.csv
 ```
 
 ```bash
 docker run -p 8050:8050 -v $(PWD):app/data --name plotly-timeseries-dashboard
 ```
-
 
 # Restart Container
 
