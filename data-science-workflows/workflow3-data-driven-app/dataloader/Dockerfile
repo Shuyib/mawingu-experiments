@@ -1,4 +1,4 @@
-FROM python:3.6.5-slim
+FROM python:3.9.12-slim-buster
 
 # Meta-data
 LABEL maintainer="Aly Sivji <alysivji@gmail.com>" \
@@ -17,18 +17,12 @@ ENV PYTHONUNBUFFERED=TRUE
 # Copy the current directory contents into the container at /app
 COPY . /app
 
-# create a virtual environment and activate it
-RUN python3 -m venv generate_data
-
-# activate virtual environment
-CMD source generate_data/bin/activate
-
 # upgrade pip
 RUN pip --no-cache-dir install --upgrade pip
 
 # pip install
-RUN pip --no-cache-dir install pandas==1.1.5 && \
-    pip --no-cache-dir install numpy>=1.15.4
+RUN pipenv install --deploy --system && \
+    rm -rf /root/.cache
 
 # Create mountpoint
 VOLUME app/data
@@ -37,4 +31,4 @@ VOLUME app/data
 ENTRYPOINT ["python"]
 
 # CMD sets default arguments to executable which may be overwritten when using docker run
-CMD ["generate_data.py"]
+CMD ["main.py"]
