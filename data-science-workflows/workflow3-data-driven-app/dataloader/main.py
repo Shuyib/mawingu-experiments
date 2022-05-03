@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import time
+from mylib.dataloader import upload_data_spaces
 
 # define streaming dataset
 # documentation was made with pyment e.g pyment -w -o numpydoc create_dataframe.py
@@ -36,3 +37,4 @@ def create_dataframe(timer_interval):
 
 if __name__ == "__main__":
     create_dataframe(timer_interval=1)
+    # print(upload_data_spaces("data.csv", ""))

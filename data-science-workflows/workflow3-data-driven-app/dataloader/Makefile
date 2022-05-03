@@ -22,6 +22,8 @@ test:
 	#test
 	#python -m pytest -vv --cov=mylib --cov=main test_*.py
 
+run:
+	# run scripts
 build:
 	#build container
     docker build -t dataloader:v0 .
