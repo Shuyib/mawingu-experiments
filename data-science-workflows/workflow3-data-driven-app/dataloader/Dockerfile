@@ -1,12 +1,8 @@
 FROM python:3.9.12-slim-buster
 
 # Meta-data
-LABEL maintainer="Aly Sivji <alysivji@gmail.com>" \
-      description="Docker Data Science Workflow #3: Data Driven Application\
-      This specific use case has the container set up like an executible.\
-      Code plus dependencies required to run the program are installed in the\
-      container. Data are set up via a mounted folder. Executing\
-      docker run with a parameter starts up a dashboard"
+LABEL maintainer="Shuyib <>" \
+      description="Docker Data Science Workflow #3: Data driven app which simulates streaming data collected at a one minute interval"
 
 # Set the working directory to /app
 WORKDIR /app
