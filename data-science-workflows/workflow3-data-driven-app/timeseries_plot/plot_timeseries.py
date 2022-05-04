@@ -36,7 +36,7 @@ if __name__ == "__main__":
     print("made plot saved it in directory for now")
     time.sleep(5)
     callback_string = "Uploaded data to object storage {}".format(
-        upload_data_spaces("lineplot.png", "ds-examples")
+        upload_data_spaces("lineplot.png", "")
     )
     print(callback_string)
     os.remove("data.csv")
