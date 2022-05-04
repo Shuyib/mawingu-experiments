@@ -11,7 +11,7 @@ def plot_data(data_set_path):
     Parameters
     ----------
     dataset_path : where the file is located. It is supposed to be in the working directory. It will be taken by the
-    read_csv which expects a file on CSV fpr
+    read_csv which expects a file on CSV from object storage.
 
 
     Returns
