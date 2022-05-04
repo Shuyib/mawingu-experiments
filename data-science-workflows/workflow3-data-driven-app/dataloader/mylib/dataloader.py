@@ -10,7 +10,7 @@ def upload_data_spaces(filename, spacename):
     client = session.client(
         "s3",
         endpoint_url=os.environ["ENDPOINT_URL"],
-        region_name="",
+        region_name="ams3",
         aws_access_key_id=os.environ["SPACES_ID"],
         aws_secret_access_key=os.environ["SECRET_KEY"],
     )

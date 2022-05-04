@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import time
+import os
 from mylib.dataloader import upload_data_spaces
 
 # define streaming dataset
@@ -24,7 +25,7 @@ def create_dataframe(timer_interval):
     -------
     create_dataframe(time_interval=1) # data is stored every second
     """
-    timeout = time.time() + 60 * 1  # 5 minutes from now
+    timeout = time.time() + 60 * 1  # 1 minutes from now
     headers = ["y"]
     df = pd.DataFrame(columns=headers)
     while True:
@@ -41,6 +42,9 @@ def create_dataframe(timer_interval):
 
 if __name__ == "__main__":
     create_dataframe(timer_interval=60)
-    time.sleep(120)
-    print("do something")
-    # print(upload_data_spaces("data.csv", ""))
+    time.sleep(62)
+    callback_string = "Uploaded data to object storage {}".format(
+        upload_data_spaces("data.csv", "")
+    )
+    print(callback_string)
+    os.remove("dataloader/data/data.csv")

@@ -24,13 +24,13 @@ test:
 
 scripts:
 	# run scripts
-	python main.py
+	python plot_timeseries.py
 build:
 	#build container
-    docker build -t dataloader:v0 .
+    docker build -t plot_timeseries:v0 .
 run:
 	#run docker in detached mode
-	docker run -d generate_data:v0
+	docker run -d plot_timeseries:v0
 
 deploy:
 	#deploy

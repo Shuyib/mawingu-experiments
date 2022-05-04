@@ -2,12 +2,10 @@
 FROM python:3.6.5-slim
 
 # Meta-data
-LABEL maintainer="Aly Sivji <alysivji@gmail.com>" \
+LABEL maintainer="Shuyib <>" \
       description="Docker Data Science Workflow #3: Data Driven Application\
-      This specific use case has the container set up like an executible.\
-      Code plus dependencies required to run the program are installed in the\
-      container. Data are set up via a mounted folder. Executing\
-      docker run with a parameter starts up a dashboard"
+      makes a matplotlib plot whose data is retrieved from object storage\
+      which is then uploaded back to object storage.""
 
 # Set the working directory to /app
 WORKDIR /app
@@ -18,20 +16,13 @@ ENV PYTHONUNBUFFERED=TRUE
 # Copy the current directory contents into the container at /app
 COPY . /app
 
-# create a virtual environment and activate it
-RUN python3 -m venv streaming_dash_app
-
-# activate virtual environment
-CMD source streaming_dash_app/bin/activate
-
-# update pip
-RUN pip --no-cache-dir install --upgrade pip 
+# upgrade pip
+RUN pip --no-cache-dir install --upgrade pip
 
 # pip install
-RUN pip --no-cache-dir install -r /app/requirements.txt
+RUN pipenv install --deploy --system && \
+    rm -rf /root/.cache
 
-# Make port available to the world outside this container
-EXPOSE 8050
 
 # Create mountpoint
 VOLUME /app/data
