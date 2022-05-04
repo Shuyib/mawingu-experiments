@@ -29,7 +29,7 @@ def plot_data(data_set_path):
 
 
 if __name__ == "__main__":
-    download_file_s3("ds-examples", "data.csv")
+    download_file_s3("", "data.csv")
     print("loaded data into working directory for now")
     time.sleep(30)
     plot_data("data.csv")
