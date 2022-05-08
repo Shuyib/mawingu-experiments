@@ -44,7 +44,7 @@ if __name__ == "__main__":
     create_dataframe(timer_interval=60)
     time.sleep(62)
     callback_string = "Uploaded data to object storage {}".format(
-        upload_data_spaces("data.csv", "")
+        upload_data_spaces("data.csv")
     )
     print(callback_string)
     os.remove("dataloader/data/data.csv")

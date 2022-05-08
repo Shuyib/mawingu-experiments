@@ -4,7 +4,30 @@ from botocore.exceptions import ClientError
 import os
 
 
-def upload_data_spaces(filename, spacename):
+def upload_data_spaces(filename):
+    """helper that allows you to upload data to object storage specifically Digital Ocean Spaces
+
+    Parameters
+    ----------
+    filename : this is the name of the file you want to upload from your working directory. Any file format works.
+    Object storage is not picky.
+
+
+    Returns
+    -------
+    Boolean True/False
+    True if your file uploaded.
+    False file didn't upload with an arror message.
+
+    NB: You need to have stored the endpointurl, region_name, aws_access_key_id, and aws_secret_access_key and spaces name from Digital ocean
+    as environment variables e.g export SPACES_NAME=<stuff>
+
+    Example
+    -------
+    upload_data_spaces(chowder.txt) uploads a file in the available folder chowder.txt
+
+
+    """
     os.chdir("data/")
     session = boto3.session.Session()
     client = session.client(
@@ -15,7 +38,7 @@ def upload_data_spaces(filename, spacename):
         aws_secret_access_key=os.environ["SECRET_KEY"],
     )
     try:
-        client.upload_file(filename, spacename, filename)
+        client.upload_file(filename, os.environ["SPACES_NAME"], filename)
     except ClientError as e:
         logging.error(e)
         return False

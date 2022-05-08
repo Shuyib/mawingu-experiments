@@ -11,7 +11,7 @@ def plot_data(data_set_path):
     Parameters
     ----------
     dataset_path : where the file is located. It is supposed to be in the working directory. It will be taken by the
-    read_csv which expects a file on CSV from object storage.
+    read_csv which expects a file on CSV fpr
 
 
     Returns
@@ -29,14 +29,14 @@ def plot_data(data_set_path):
 
 
 if __name__ == "__main__":
-    download_file_s3("", "data.csv")
+    download_file_s3("data.csv")
     print("loaded data into working directory for now")
     time.sleep(30)
     plot_data("data.csv")
     print("made plot saved it in directory for now")
     time.sleep(5)
     callback_string = "Uploaded data to object storage {}".format(
-        upload_data_spaces("lineplot.png", "")
+        upload_data_spaces("lineplot.png")
     )
     print(callback_string)
     os.remove("data.csv")
