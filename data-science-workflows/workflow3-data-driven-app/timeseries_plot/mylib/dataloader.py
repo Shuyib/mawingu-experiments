@@ -20,7 +20,7 @@ def download_file_s3(filename):
     A file in different formats CSV and or PNG.
 
     NB: You need to have stored the endpointurl, region_name, aws_access_key_id, and aws_secret_access_key and spaces name from Digital ocean
-    as environment variables e.g export SPACES_NAME=<stuff>
+    as environment variables e.g export SPACES_NAME=<naemofspace>
 
     Example
     -------
@@ -61,7 +61,7 @@ def upload_data_spaces(filename):
     False file didn't upload with an arror message.
 
     NB: You need to have stored the endpointurl, region_name, aws_access_key_id, and aws_secret_access_key and spaces name from Digital ocean
-    as environment variables e.g export SPACES_NAME=<stuff>
+    as environment variables e.g export SPACES_NAME=<nameofspace>
 
     Example
     -------
