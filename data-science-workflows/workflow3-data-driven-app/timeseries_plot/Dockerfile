@@ -1,11 +1,12 @@
 # Use latest Python runtime as a parent image
-FROM python:3.6.5-slim
+FROM python:3.9.12-slim-buster
+
 
 # Meta-data
 LABEL maintainer="Shuyib <>" \
       description="Docker Data Science Workflow #3: Data Driven Application\
       makes a matplotlib plot whose data is retrieved from object storage\
-      which is then uploaded back to object storage.""
+      which is then uploaded back to object storage."
 
 # Set the working directory to /app
 WORKDIR /app
@@ -18,6 +19,9 @@ COPY . /app
 
 # upgrade pip
 RUN pip --no-cache-dir install --upgrade pip
+
+# install pipenv
+RUN pip install pipenv
 
 # pip install
 RUN pipenv install --deploy --system && \

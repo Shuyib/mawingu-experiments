@@ -47,4 +47,4 @@ if __name__ == "__main__":
         upload_data_spaces("data.csv")
     )
     print(callback_string)
-    os.remove("dataloader/data/data.csv")
+    os.remove("data/data.csv")
