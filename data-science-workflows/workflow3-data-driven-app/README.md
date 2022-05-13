@@ -24,7 +24,7 @@ docker build -t plot-timeseries-app:v0 .
 ```
 
 # Reduce the size of the image
-You'll need to install the [TAR](https://dockersl.im/) and install it  
+You'll need to install the [TAR](https://dockersl.im/) and install it according to the instructions in there.  
 
 ```bash
 #generate data
