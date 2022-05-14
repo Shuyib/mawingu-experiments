@@ -25,12 +25,14 @@ test:
 scripts:
 	# run scripts
 	python main.py
+
 build:
 	#build container
-    docker build -t dataloader:v0 .
+    docker build -t generate_data:v0 .
+	
 run:
-	#run docker in detached mode
-	docker run -d generate_data:v0
+	#run docker
+	docker run -e ENDPOINT_URL -e SECRET_KEY -e SPACES_ID -e SPACES_NAME generate_data:v0
 
 deploy:
 	#deploy
