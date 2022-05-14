@@ -28,7 +28,6 @@ def upload_data_spaces(filename):
 
 
     """
-    os.chdir("data/")
     session = boto3.session.Session()
     client = session.client(
         "s3",
