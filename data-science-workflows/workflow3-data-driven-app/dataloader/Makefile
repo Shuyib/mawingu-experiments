@@ -28,7 +28,7 @@ scripts:
 
 build:
 	#build container
-    docker build -t generate_data:v0 .
+    	docker build -t generate_data:v0 .
 	
 run:
 	#run docker
