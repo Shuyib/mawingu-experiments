@@ -8,6 +8,7 @@ pandas = "==1.1.5"
 numpy = ">=1.15.4"
 boto3 = "==1.18.21"
 pyment = "==0.3.3"
+great-expectations = "*"
 
 [dev-packages]
 
