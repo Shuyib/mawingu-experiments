@@ -49,5 +49,5 @@ docker run -e ENDPOINT_URL -e SECRET_KEY -e SPACES_ID -e SPACES_NAME plot-timese
 # Restart Container
 
 ```bash
-docker start -ia plotly-timeseries-dashboard
+docker start -ia plot-timeseries-app:v0
 ```
