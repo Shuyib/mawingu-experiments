@@ -6,12 +6,6 @@ This is an interesting use case since the data loader is directly specified in t
 
 # How to build Docker image  
 
-Make a shared volume first. This will be shared between containers. 
-
-```bash
-docker volume create data-app
-```
-
 For the generate data script
 
 
@@ -24,7 +18,7 @@ docker build -t plot-timeseries-app:v0 .
 ```
 
 # Reduce the size of the image
-You'll need to install the [TAR](https://dockersl.im/) and install it according to the instructions in there.  
+You'll need to install the [TAR](https://dockersl.im/) and install it  
 
 ```bash
 #generate data
