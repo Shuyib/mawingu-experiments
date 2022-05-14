@@ -17,7 +17,7 @@ def upload_data_spaces(filename):
     -------
     Boolean True/False
     True if your file uploaded.
-    False file didn't upload with an arror message.
+    False file didn't upload with an error message.
 
     NB: You need to have stored the endpointurl, region_name, aws_access_key_id, and aws_secret_access_key and spaces name from Digital ocean
     as environment variables e.g export SPACES_NAME=<nameofspace>
