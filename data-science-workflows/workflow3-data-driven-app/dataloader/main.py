@@ -72,7 +72,7 @@ def write_test_expectations():
 
 if __name__ == "__main__":
     create_dataframe(timer_interval=60)
-    # time.sleep(62)
+    time.sleep(62)
     callback_string1 = "Uploaded data to object storage {}".format(
         upload_data_spaces("data.csv")
     )
