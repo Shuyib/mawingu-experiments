@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: plot-deployment
-        image: registry.digitalocean.com/footage2423/plot-timeseries-app:v0
+        image: registry.digitalocean.com/<my-registry>/<my-image>
         resources:
           limits:
             memory: "500Mi" # 128 megabytes
