@@ -32,13 +32,13 @@ def download_file_s3(filename):
     # use aws sdk to define credentials to access service
     client = session.client(
         "s3",
-        endpoint_url=os.getenv["ENDPOINT_URL"],
+        endpoint_url=os.getenv("ENDPOINT_URL"),
         region_name="ams3",
-        aws_access_key_id=os.getenv["SPACES_ID"],
-        aws_secret_access_key=os.getenv["SECRET_KEY"],
+        aws_access_key_id=os.getenv("SPACES_ID"),
+        aws_secret_access_key=os.getenv("SECRET_KEY"),
     )
     try:
-        client.download_file(os.getenv["SPACES_NAME"], filename, filename)
+        client.download_file(os.getenv("SPACES_NAME"), filename, filename)
     except ClientError as e:
         logging.error(e)
         return False

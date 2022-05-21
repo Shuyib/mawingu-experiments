@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: plot-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: plot-deployment
+  template:
+    metadata:
+      labels:
+        app: plot-deployment
+    spec:
+      containers:
+      - name: plot-deployment
+        image: registry.digitalocean.com/footage2423/plot-timeseries-app:v0
+        resources:
+          limits:
+            memory: "500Mi" # 128 megabytes
+            cpu: "50m" # not more than 
+        ports:
+        - containerPort: 9696
+

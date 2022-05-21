@@ -31,13 +31,13 @@ def upload_data_spaces(filename):
     session = boto3.session.Session()
     client = session.client(
         "s3",
-        endpoint_url=os.getenv["ENDPOINT_URL"],
+        endpoint_url=os.getenv("ENDPOINT_URL"),
         region_name="ams3",
-        aws_access_key_id=os.getenv["SPACES_ID"],
-        aws_secret_access_key=os.getenv["SECRET_KEY"],
+        aws_access_key_id=os.getenv("SPACES_ID"),
+        aws_secret_access_key=os.getenv("SECRET_KEY"),
     )
     try:
-        client.upload_file(filename, os.getenv["SPACES_NAME"], filename)
+        client.upload_file(filename, os.getenv("SPACES_NAME"), filename)
     except ClientError as e:
         logging.error(e)
         return False

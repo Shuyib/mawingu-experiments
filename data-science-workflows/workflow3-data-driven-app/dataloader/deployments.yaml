@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dataloader-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dataloader-deployment
+  template:
+    metadata:
+      labels:
+        app: dataloader-deployment
+    spec:
+      containers:
+      - name: dataloader-deployment
+        image: registry.digitalocean.com/<my-registry>/<my-image>
+        resources:
+          limits:
+            memory: "500Mi" # 128 megabytes
+            cpu: "50m" # not more than 
+        ports:
+        - containerPort: 9696
+
