@@ -25,6 +25,7 @@ test:
 scripts:
 	# run scripts
 	python plot_timeseries.py
+	
 build:
 	#build container
     docker build -t plot_timeseries:v0 .
@@ -35,5 +36,5 @@ deploy:
 	#deploy
 	docker tag <my-image> registry.digitalocean.com/<my-registry>/<my-image>
 	docker push registry.digitalocean.com/<my-registry>/<my-image>  
-	
+
 all: install post-install lint test deploy
