@@ -28,7 +28,7 @@ scripts:
 	
 build:
 	#build container
-    docker build -t plot_timeseries:v0 .
+    	docker build -t plot_timeseries:v0 .
 run:
 	#run docker in detached mode add -d flag
 	docker run -e ENDPOINT_URL -e SECRET_KEY -e SPACES_ID -e SPACES_NAME plot-timeseries-app:v0
