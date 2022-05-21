@@ -33,5 +33,7 @@ run:
 	docker run -e ENDPOINT_URL -e SECRET_KEY -e SPACES_ID -e SPACES_NAME plot-timeseries-app:v0
 deploy:
 	#deploy
+	docker tag <my-image> registry.digitalocean.com/<my-registry>/<my-image>
+	docker push registry.digitalocean.com/<my-registry>/<my-image>  
 	
 all: install post-install lint test deploy

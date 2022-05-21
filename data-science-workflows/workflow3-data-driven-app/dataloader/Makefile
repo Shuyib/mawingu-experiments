@@ -36,5 +36,7 @@ run:
 
 deploy:
 	#deploy
+	docker tag <my-image> registry.digitalocean.com/<my-registry>/<my-image>
+	docker push registry.digitalocean.com/<my-registry>/<my-image>
 	
 all: install post-install lint test deploy
