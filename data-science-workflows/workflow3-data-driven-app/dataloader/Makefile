@@ -1,4 +1,4 @@
-install:
+linstall:
 	pip --no-cache-dir install pipenv
 
 
@@ -28,11 +28,11 @@ scripts:
 
 build:
 	#build container
-    	docker build -t generate_data:v0 .
+	sudo docker build -t generate_data:v0 .
 	
 run:
 	#run docker
-	docker run -e ENDPOINT_URL -e SECRET_KEY -e SPACES_ID -e SPACES_NAME generate_data:v0
+	sudo docker run -e ENDPOINT_URL=${ENDPOINT_URL} -e SECRET_KEY=${SECRET_KEY} -e SPACES_ID=${SPACES_ID} -e SPACES_NAME=${SPACES_NAME} generate_data:v0
 
 deploy:
 	#deploy
