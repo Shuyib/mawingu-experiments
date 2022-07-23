@@ -15,9 +15,18 @@ spec:
       containers:
       - name: plot-deployment
         image: registry.digitalocean.com/<my-registry>/<my-image>
+        env:
+        - name: ENDPOINT_URL
+          value: ${ENDPOINT_URL}
+        - name: SECRET_KEY
+          value: ${SECRET_KEY}
+        - name: SPACES_ID
+          value: ${SPACES_ID}
+        - name: SPACES_NAME
+          value: ${SPACES_NAME}
         resources:
           limits:
-            memory: "500Mi" # 128 megabytes
+            memory: "500Mi" # 500 megabytes
             cpu: "50m" # not more than 
         ports:
         - containerPort: 9696
