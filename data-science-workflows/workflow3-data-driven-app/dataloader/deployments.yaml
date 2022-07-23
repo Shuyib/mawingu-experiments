@@ -26,7 +26,7 @@ spec:
           value: ${SPACES_NAME}
         resources:
           limits:
-            memory: "500Mi" # 128 megabytes
+            memory: "500Mi" # 500 megabytes
             cpu: "50m" # not more than 
         ports:
         - containerPort: 9696
