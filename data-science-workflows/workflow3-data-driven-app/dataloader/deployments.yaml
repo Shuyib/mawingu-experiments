@@ -15,6 +15,15 @@ spec:
       containers:
       - name: dataloader-deployment
         image: registry.digitalocean.com/<my-registry>/<my-image>
+        env:
+        - name: ENDPOINT_URL
+          value: ${ENDPOINT_URL}
+        - name: SECRET_KEY
+          value: ${SECRET_KEY}
+        - name: SPACES_ID
+          value: ${SPACES_ID}
+        - name: SPACES_NAME
+          value: ${SPACES_NAME}
         resources:
           limits:
             memory: "500Mi" # 128 megabytes
