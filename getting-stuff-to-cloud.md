@@ -36,7 +36,7 @@ cd ../..
 ```bash
 doctl registry login 
 
-# follow instructions specified here https://cloud.digitalocean.com/registry?i=f2095c
+# follow instructions specified here https://docs.digitalocean.com/products/container-registry/how-to/use-registry-docker-kubernetes/#add-secret-control-panel
 ```
 
 # build and run images 
@@ -70,7 +70,7 @@ Get a deployments.yaml file that is generic. You can make this from visual studi
 sure you do the following:
 1. ensure that the **app**, **name** & ****is consistent e.g ping-deployment and the image has been tagged the right way. The trick is that 
 you should use the registry.digitalocean.com/<my-registry>/<my-image>
-2. Save the file and call it something like deploymnent.yaml
+2. Save the file and call it something like deployment.yaml
 3. Run. You may need to create a namespace to handle organisation better.  
 
 ```bash
@@ -78,7 +78,8 @@ kubectl create -f deployments.yaml
 ```
 If you have issues it maybe that the container has been given authorization to run in your cluster. Head to the console
 and fix that with   
-Making sure that your cluster and the container registry are in the same region
+Making sure that your cluster and the container registry are in the same region. 
+If they are any passwords you need to add your pods. See https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/.
 
 ```bash
 kubectl describe nameofpod

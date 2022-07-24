@@ -34,9 +34,14 @@ run:
 	#run docker
 	sudo docker run -e ENDPOINT_URL=${ENDPOINT_URL} -e SECRET_KEY=${SECRET_KEY} -e SPACES_ID=${SPACES_ID} -e SPACES_NAME=${SPACES_NAME} generate_data:v0
 
+push:
+	# move to the docker registry
+	docker tag <my-image> registry.digitalocean.com/<my-registry>/<my-image:version e.g v0>
+	docker push registry.digitalocean.com/<my-registry>/<my-image:version e.g v0>
+
 deploy:
-	#deploy
-	docker tag <my-image> registry.digitalocean.com/<my-registry>/<my-image>
-	docker push registry.digitalocean.com/<my-registry>/<my-image>
+	# run the container in pod
+	kubectl create -f deployments.yaml
+	
 
 all: install post-install lint test deploy

@@ -14,10 +14,10 @@ spec:
     spec:
       containers:
       - name: dataloader-deployment
-        image: registry.digitalocean.com/<my-registry>/<my-image>
+        image: registry.digitalocean.com/<my-registry>/<my-image> 
         env:
         - name: ENDPOINT_URL
-          value: ${ENDPOINT_URL}
+          value: ${ENDPOINT_URL} # replace these with values in "" don't expose in public repositories
         - name: SECRET_KEY
           value: ${SECRET_KEY}
         - name: SPACES_ID
