@@ -54,12 +54,12 @@ docker start -ia plot-timeseries-app:v0
 
 # Expected Output from running docker image or K8s logs name of the pod  
 
-**Dataloader**
-Uploaded data to object storage True
-Checking great data expectations for project
-Uploaded data expectations to object storage True
+**Dataloader**  
+Uploaded data to object storage True  
+Checking great data expectations for project  
+Uploaded data expectations to object storage True  
 
-**Time series plot**
-loaded data into working directory for now
-made plot saved it in directory for now
-Uploaded data to object storage True
+**Time series plot**  
+loaded data into working directory for now  
+made plot saved it in directory for now  
+Uploaded data to object storage True  
