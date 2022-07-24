@@ -38,8 +38,8 @@ push:
 	docker tag <my-image> registry.digitalocean.com/<my-registry>/<my-image:version e.g v0>
 	docker push registry.digitalocean.com/<my-registry>/<my-image:version e.g v0>
 deploy:
-    # run container in k8s pod
-	kubectl create -f deployments.yaml
+        # run container in k8s pod
+        kubectl create -f deployments.yaml
 
 
 all: install post-install lint test deploy
