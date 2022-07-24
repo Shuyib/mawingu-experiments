@@ -28,7 +28,7 @@ scripts:
 	
 build:
 	#build container
-    sudo docker build -t plot_timeseries:v0 .
+        sudo docker build -t plot_timeseries:v0 .
 run:
 	#run docker in detached mode add -d flag
 	sudo docker run -e ENDPOINT_URL=${ENDPOINT_URL} -e SECRET_KEY=${SECRET_KEY} -e SPACES_ID=${SPACES_ID} -e SPACES_NAME=${SPACES_NAME} plot_timeseries:v0
