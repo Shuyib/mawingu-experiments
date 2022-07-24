@@ -1,4 +1,4 @@
-This is a project that illustrated a scenario that a user may face in practice. In this project, one function is responsible for generating data in a interval while another updates a line plot using the Plotly library.
+This is a project that illustrated a scenario that a user may face in practice. In this project, one function is responsible for generating data in a interval while another updates a line plot using the matplotlib library.
 
 See **plot_timeseries.py** for more information.  
 
