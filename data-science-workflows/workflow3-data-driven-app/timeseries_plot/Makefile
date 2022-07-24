@@ -42,4 +42,4 @@ deploy:
         kubectl create -f deployments.yaml
 
 
-all: install post-install lint test deploy
+all: install post-install lint test push deploy
