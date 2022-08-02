@@ -9,6 +9,10 @@ post-install:
 
 clean-dir:
 	rm -rf /root/.cache
+	
+docstrings:
+	# format docstring
+	pyment -w -o numpydoc *.py
 
 format:
 	#format code
