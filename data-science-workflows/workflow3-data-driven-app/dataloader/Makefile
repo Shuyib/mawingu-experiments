@@ -1,4 +1,4 @@
-linstall:
+install:
 	pip --no-cache-dir install pipenv
 
 
