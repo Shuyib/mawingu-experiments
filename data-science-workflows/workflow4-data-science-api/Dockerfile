@@ -25,6 +25,9 @@ RUN python3 -m venv iris-app
 # activate virtual environment
 CMD source iris-app/bin/activate
 
+# upgrade pip
+RUN pip --no-cache-dir install --upgrade pip
+
 # pip install
 RUN pip --no-cache-dir install -r /app/requirements.txt
 
