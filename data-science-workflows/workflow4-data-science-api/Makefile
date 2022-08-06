@@ -30,7 +30,7 @@ build:
 	
 run:
 	#run docker
-	docker run -p 5000:5000 -v workflow4-data-science-api
+	docker run -p 5000:5000 workflow4-data-science-api
 
 push:
 	# move to the docker registry
