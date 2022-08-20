@@ -6,12 +6,14 @@ from flask_restful import Resource, Api, reqparse
 
 # pydata stack
 import numpy as np
-from sklearn.externals import joblib
-
+#from sklearn.externals import joblib
+import pickle
 
 # set up Flask and Flask-Restful
 app = Flask(__name__)
 api = Api(app)
+
+
 
 # argument parsing
 parser = reqparse.RequestParser()
@@ -39,7 +41,9 @@ class IrisPredict(Resource):
         ]])
 
         # load model and predict
-        knn_from_pkl = joblib.load('iris_knn_model.pkl')
+        #knn_from_pkl = pickle.load('iris_knn_model.pkl')
+
+        knn_from_pkl = pickle.load(open('iris_knn_model.pkl', 'rb'))
         predicted_class = knn_from_pkl.predict(pt_to_predict)
 
         # return answer
