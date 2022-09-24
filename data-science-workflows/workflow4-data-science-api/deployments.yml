@@ -13,7 +13,7 @@ spec:
         app: api-deployment
     spec:
       containers:
-      - name: ping-deployment
+      - name: api-deployment
         image: registry.digitalocean.com/<my-registry>/<my-image>
         resources:
           limits:
