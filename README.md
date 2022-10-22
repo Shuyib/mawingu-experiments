@@ -3,44 +3,41 @@ This is a project that has various examples of how you can use kubernetes to run
 .
 ├── data-science-workflows - data science related projects with data loaders, plots, Application programming Interfaces.   
 │   ├── README.md - Explanation of the different use cases an data driven application (dataloader + plotter) & an API.  
-│   ├── workflow3-data-driven-app
-│   │   ├── dataloader
-│   │   │   ├── deployments.yaml
-│   │   │   ├── Dockerfile
-│   │   │   ├── main.py
-│   │   │   ├── Makefile
-│   │   │   ├── mylib
-│   │   │   │   ├── dataloader.py
-│   │   │   │   └── __init__.py
-│   │   │   ├── Pipfile
-│   │   │   ├── Pipfile.lock
-│   │   │   └── test_main.py
-│   │   ├── README.md
-│   │   └── timeseries_plot
-│   │       ├── deployments.yaml
-│   │       ├── Dockerfile
-│   │       ├── Makefile
-│   │       ├── mylib
-│   │       │   ├── dataloader.py
-│   │       │   ├── __init__.py
-│   │       │   └── __pycache__
-│   │       │       ├── dataloader.cpython-38.pyc
-│   │       │       └── __init__.cpython-38.pyc
-│   │       ├── Pipfile
-│   │       ├── Pipfile.lock
-│   │       └── plot_timeseries.py
-│   └── workflow4-data-science-api
-│       ├── app.py
-│       ├── deployments.yml
-│       ├── Dockerfile
-│       ├── iris-fit-k-nearest-neighbors-pickle-model.ipynb
-│       ├── iris_knn_model.pkl
-│       ├── Makefile
-│       ├── pycaret+gradio.zip
-│       ├── README.md
-│       ├── requirements.txt
-│       ├── service.yaml
-│       └── test_api_endpoint.ipynb
+│   ├── workflow3-data-driven-app  
+│   │   ├── dataloader  
+│   │   │   ├── deployments.yaml  
+│   │   │   ├── Dockerfile  
+│   │   │   ├── main.py  
+│   │   │   ├── Makefile  
+│   │   │   ├── mylib  
+│   │   │   │   ├── dataloader.py  
+│   │   │   │   └── __init__.py  
+│   │   │   ├── Pipfile  
+│   │   │   ├── Pipfile.lock  
+│   │   │   └── test_main.py  
+│   │   ├── README.md  
+│   │   └── timeseries_plot  
+│   │       ├── deployments.yaml  
+│   │       ├── Dockerfile  
+│   │       ├── Makefile  
+│   │       ├── mylib  
+│   │       │   ├── dataloader.py  
+│   │       │   ├── __init__.py    
+│   │       ├── Pipfile  
+│   │       ├── Pipfile.lock  
+│   │       └── plot_timeseries.py  
+│   └── workflow4-data-science-api  
+│       ├── app.py   
+│       ├── deployments.yml  
+│       ├── Dockerfile  
+│       ├── iris-fit-k-nearest-neighbors-pickle-model.ipynb  
+│       ├── iris_knn_model.pkl  
+│       ├── Makefile  
+│       ├── pycaret+gradio.zip  
+│       ├── README.md   
+│       ├── requirements.txt  
+│       ├── service.yaml  
+│       └── test_api_endpoint.ipynb  
 ├── getting-stuff-to-cloud.md - a summary of how its done of digital ocean.  
 ├── kubernetes-scheduling - example where you run a cronjob every 5 minutes: Here a job that does a dot product on multidimensional arrays made with numpy.  
 │   ├── deployments.yaml - manifest file that specifies instructions that will be given to the kubernetes cluster. It is a cron job meaning that it will run after a certain interval.  
