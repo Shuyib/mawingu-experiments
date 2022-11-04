@@ -46,8 +46,8 @@ This is a project that has various examples of how you can use kubernetes to run
 │   ├── Pipfile - contains the requirements of the project as well as the python version.  
 │   ├── Pipfile.lock - Just freezes the requirements for the project.  
 │   └── README.md - Summary of what the project is about and how to run it.  
-├── LICENSE - CC0-1.0 license 
-├── ping-app - a simple flask application that prints out pong if you run a CURL request.  
+├── LICENSE - CC0-1.0 license   
+├── ping-app - a simple flask application that prints out pong if you run a CURL request.    
 │   ├── deployments.yaml - manifest file that specifies instructions that will be given to the kubernetes cluster.  
 │   ├── Dockerfile - a file that packages and runs the application like a zip file.  
 │   ├── ping.py - python file that defines the Flask application and associated methods.  
