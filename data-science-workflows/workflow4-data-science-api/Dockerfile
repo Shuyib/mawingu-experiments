@@ -19,17 +19,11 @@ ENV PYTHONUNBUFFERED=TRUE
 # Copy the current directory contents into the container at /app
 COPY . /app
 
-# make a virtual environment
-RUN python3 -m venv iris-app
-
-# activate virtual environment
-CMD source iris-app/bin/activate
-
-# upgrade pip
-RUN pip --no-cache-dir install --upgrade pip
-
-# pip install
-RUN pip --no-cache-dir install -r /app/requirements.txt
+# make a virtual environment, activate it, upgrade pip, install dependencies
+RUN python3 -m venv iris-app && \
+      . iris-app/bin/activate && \
+    pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
 # Make port available to the world outside this container
 EXPOSE 5000
