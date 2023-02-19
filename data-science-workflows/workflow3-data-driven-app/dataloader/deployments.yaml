@@ -14,16 +14,16 @@ spec:
     spec:
       containers:
       - name: dataloader-deployment
-        image: registry.digitalocean.com/<my-registry>/<my-image> 
+        image: ${{digital_ocean_registry}} 
         env:
         - name: ENDPOINT_URL
-          value: ${ENDPOINT_URL} # replace these with values in "" don't expose in public repositories
+          value: ${{ENDPOINT_URL}} # replace these with values in "" don't expose in public repositories
         - name: SECRET_KEY
-          value: ${SECRET_KEY}
+          value: ${{SECRET_KEY}}
         - name: SPACES_ID
-          value: ${SPACES_ID}
+          value: ${{SPACES_ID}}
         - name: SPACES_NAME
-          value: ${SPACES_NAME}
+          value: ${{SPACES_NAME}}
         resources:
           limits:
             memory: "500Mi" # 500 megabytes
