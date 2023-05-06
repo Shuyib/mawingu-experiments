@@ -1,0 +1,25 @@
+# write a dockerfile based on app2.py
+FROM python:3.8-slim-buster
+
+# set a directory for the app
+WORKDIR /app
+
+# copy all the specified files to the container
+COPY app2.py FinaldtModel26Nov2022.pkl requirements2.txt ./
+
+# install dependencies
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements2.txt
+
+
+# tell the port number the container should expose
+EXPOSE 5000
+
+# run the command
+CMD ["python", "./app2.py"]
+
+# Build the docker image with Dockerfile2 as the name
+# docker build -t workflow4-app2 -f Dockerfile2 .
+
+# Run the docker image
+# docker run -p 5000:5000 workflow4-app2 
