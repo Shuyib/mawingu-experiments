@@ -7,6 +7,10 @@ import glob as glob
 import great_expectations as ge
 from mylib.dataloader import upload_data_spaces
 
+# make the data directory if it doesn't exist
+if not os.path.exists("data/"):
+    os.makedirs("data/")
+
 # fix the working directory remove this and it won't work
 os.chdir("data/")
 
