@@ -26,17 +26,21 @@ test:
 	#test
 	#python -m pytest -vv --cov=mylib --cov=main test_*.py
 
-scripts:
+run_scripts:
 	# run scripts
 	python main.py
 
-build:
+build: Dockerfile
 	#build container
 	sudo docker build -t generate_data:v0 .
 	
-run:
+run: build
 	#run docker
 	sudo docker run -e ENDPOINT_URL=${ENDPOINT_URL} -e SECRET_KEY=${SECRET_KEY} -e SPACES_ID=${SPACES_ID} -e SPACES_NAME=${SPACES_NAME} generate_data:v0
+
+clean: Dockerfile
+	# remove dangling images, containers, volumes and networks
+	sudo docker system prune -a
 
 push:
 	# move to the docker registry
