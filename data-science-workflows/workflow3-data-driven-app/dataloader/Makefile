@@ -1,3 +1,5 @@
+PLATFORM=linux/amd64
+
 install:
 	pip --no-cache-dir install pipenv
 
@@ -32,11 +34,11 @@ run_scripts:
 
 build: Dockerfile
 	#build container
-	sudo docker build -t generate_data:v0 .
+	sudo docker build --platform $(PLATFORM) -t generate_data:v0 .
 	
 run: build
 	#run docker
-	sudo docker run -e ENDPOINT_URL=${ENDPOINT_URL} -e SECRET_KEY=${SECRET_KEY} -e SPACES_ID=${SPACES_ID} -e SPACES_NAME=${SPACES_NAME} generate_data:v0
+	sudo docker run --platform $(PLATFORM) -e ENDPOINT_URL=${ENDPOINT_URL} -e SECRET_KEY=${SECRET_KEY} -e SPACES_ID=${SPACES_ID} -e SPACES_NAME=${SPACES_NAME} generate_data:v0
 
 clean: Dockerfile
 	# remove dangling images, containers, volumes and networks
