@@ -16,16 +16,21 @@ ENV PYTHONUNBUFFERED=TRUE
 # Copy the current directory contents into the container at /app
 COPY . /app
 
-# upgrade pip
+# upgrade pip and install pipenv
 RUN pip --no-cache-dir install --upgrade pip && \
     pip install --no-cache-dir pipenv && \
     pipenv install --deploy --system && \
-    rm -rf /root/.cache/
+    rm -rf /root/.cache/ && \
+    useradd -m myuser && \
+    chown -R myuser:myuser /app
+
+# Switch to non-root user
+USER myuser
 
 # Create mountpoint
 VOLUME /app/data
 
-# ENTRYPOINT allows us to specify the default executible
+# ENTRYPOINT allows us to specify the default executable
 ENTRYPOINT ["python"]
 
 # CMD sets default arguments to executable which may be overwritten when using docker run
