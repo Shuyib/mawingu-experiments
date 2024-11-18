@@ -16,16 +16,19 @@ ENV PYTHONUNBUFFERED=TRUE
 COPY . /app
 
 # upgrade pip and install pipenv
-
 RUN pip --no-cache-dir install --upgrade pip && \
     pip install --no-cache-dir pipenv && \
     pipenv install --deploy --system && \   
     rm -rf /root/.cache/
 
-# Create mountpoint
-VOLUME app/data
+# Add a non-root user and switch to that user
+RUN useradd -m myuser
+USER myuser
 
-# ENTRYPOINT allows us to specify the default executible
+# Create mountpoint
+VOLUME /app/data
+
+# ENTRYPOINT allows us to specify the default executable
 ENTRYPOINT ["python"]
 
 # CMD sets default arguments to executable which may be overwritten when using docker run
