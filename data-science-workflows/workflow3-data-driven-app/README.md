@@ -4,7 +4,7 @@ See **plot_timeseries.py** for more information.
 
 This is an interesting use case since the data loader is directly specified in the container. Mimicking an already existing pipeline to get data.  
 
-The data loader is responsible for generating data and uploading it to an object storage. The data is then used by the time series plotter to plot the data.
+The data loader is responsible for generating data and uploading it to an object storage. The data is then used by the time series plotter to plot the data. It might help to have an aggregation script that runs maybe every midnight to have a single file to load the data. Additionally, you can use a database for example PostgreSQL (Plus since you can make vector databases) or MySQL to improve the application load times.
 
 # Setup your digital ocean spaces 
 
