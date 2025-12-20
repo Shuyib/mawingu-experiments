@@ -1,0 +1,102 @@
+version: '3.8'
+
+services:
+  # MLflow tracking server
+  mlflow:
+    image: python:3.10-slim
+    container_name: mlflow-server
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlruns:/mlruns
+      - ./models:/models
+    command: >
+      sh -c "pip install mlflow==2.15.1 &&
+             mlflow server 
+             --backend-store-uri file:///mlruns 
+             --default-artifact-root file:///models 
+             --host 0.0.0.0 
+             --port 5000"
+    networks:
+      - mlops-network
+
+  # Model training service
+  training:
+    build:
+      context: .
+      dockerfile: Dockerfile.training
+    container_name: model-training
+    volumes:
+      - ./mlruns:/app/mlruns
+      - ./models:/app/models
+      - ./data:/app/data
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+    depends_on:
+      - mlflow
+    networks:
+      - mlops-network
+    # Run training once and exit
+    command: python training/train_model.py --model-type both
+
+  # Inference service - Random Forest
+  inference-rf:
+    build:
+      context: .
+      dockerfile: Dockerfile.inference
+    container_name: inference-rf
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./mlruns:/app/mlruns
+      - ./models:/app/models
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - MODEL_PATH=/app/models
+      - MODEL_NAME=random_forest
+    depends_on:
+      - mlflow
+      - training
+    networks:
+      - mlops-network
+
+  # Inference service - XGBoost (for A/B testing)
+  inference-xgb:
+    build:
+      context: .
+      dockerfile: Dockerfile.inference
+    container_name: inference-xgb
+    ports:
+      - "8002:8000"
+    volumes:
+      - ./mlruns:/app/mlruns
+      - ./models:/app/models
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - MODEL_PATH=/app/models
+      - MODEL_NAME=xgboost
+    depends_on:
+      - mlflow
+      - training
+    networks:
+      - mlops-network
+
+  # Monitoring dashboard (optional - for future Grafana integration)
+  # monitoring:
+  #   image: grafana/grafana:latest
+  #   container_name: monitoring-dashboard
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - ./monitoring/grafana:/var/lib/grafana
+  #   networks:
+  #     - mlops-network
+
+networks:
+  mlops-network:
+    driver: bridge
+
+volumes:
+  mlruns:
+  models:
+  monitoring:

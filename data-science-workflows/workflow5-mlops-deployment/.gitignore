@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# MLflow
+mlruns/
+mlartifacts/
+mlflow.db
+
+# Models
+models/*.pkl
+models/*.joblib
+
+# Monitoring
+monitoring/*.html
+monitoring/*.json
+monitoring/*.csv
+
+# Data
+data/*.csv
+data/*.parquet
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Logs
+*.log
