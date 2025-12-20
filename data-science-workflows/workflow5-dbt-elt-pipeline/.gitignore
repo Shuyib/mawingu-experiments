@@ -8,6 +8,9 @@ dbt_project/.user.yml
 *.duckdb
 *.duckdb.wal
 
+# Generated data
+data/*.csv
+
 # Python
 __pycache__/
 *.py[cod]

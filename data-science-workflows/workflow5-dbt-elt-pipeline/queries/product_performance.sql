@@ -1,5 +1,6 @@
 -- Product Performance Queries
 -- Analyze product sales, profitability, and trends
+-- Note: Mart tables are in the main_marts schema
 
 -- 1. Top 10 products by revenue
 SELECT 
@@ -11,7 +12,7 @@ SELECT
     total_profit,
     profit_margin_pct,
     overall_rank
-FROM mart_product_performance
+FROM main_marts.mart_product_performance
 ORDER BY total_revenue DESC
 LIMIT 10;
 
@@ -23,7 +24,7 @@ SELECT
     ROUND(SUM(total_revenue), 2) as category_revenue,
     ROUND(SUM(total_profit), 2) as category_profit,
     ROUND(AVG(profit_margin_pct), 2) as avg_profit_margin
-FROM mart_product_performance
+FROM main_marts.mart_product_performance
 GROUP BY category
 ORDER BY category_revenue DESC;
 
@@ -34,7 +35,7 @@ WITH ranked_products AS (
         product_name,
         total_revenue,
         category_rank
-    FROM mart_product_performance
+    FROM main_marts.mart_product_performance
 )
 SELECT 
     category,
@@ -54,7 +55,7 @@ SELECT
     total_revenue,
     profit_margin_pct,
     overall_rank
-FROM mart_product_performance
+FROM main_marts.mart_product_performance
 WHERE units_sold < 50
 ORDER BY total_revenue ASC
 LIMIT 20;
@@ -68,7 +69,7 @@ SELECT
     total_revenue,
     total_profit,
     profit_margin_pct
-FROM mart_product_performance
+FROM main_marts.mart_product_performance
 WHERE profit_margin_pct >= 50
 ORDER BY total_profit DESC
 LIMIT 15;
@@ -84,7 +85,7 @@ FROM (
         customer_id,
         category,
         SUM(revenue) as total_revenue
-    FROM int_order_items
+    FROM main_intermediate.int_order_items
     GROUP BY customer_id, category
 ) p
 GROUP BY p.category
@@ -98,7 +99,7 @@ SELECT
     total_revenue,
     datediff('day', first_sold_date, last_sold_date) as days_on_sale,
     ROUND(units_sold::DECIMAL / NULLIF(datediff('day', first_sold_date, last_sold_date), 0), 2) as units_per_day
-FROM mart_product_performance
+FROM main_marts.mart_product_performance
 WHERE datediff('day', first_sold_date, last_sold_date) > 30
 ORDER BY units_per_day DESC
 LIMIT 20;

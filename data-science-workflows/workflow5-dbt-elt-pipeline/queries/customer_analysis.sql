@@ -1,5 +1,6 @@
 -- Customer Analysis Queries
 -- Run these queries against the DuckDB warehouse after dbt transformations
+-- Note: Mart tables are in the main_marts schema
 
 -- 1. Top 10 customers by lifetime value
 SELECT 
@@ -10,7 +11,7 @@ SELECT
     total_orders,
     customer_segment,
     activity_status
-FROM mart_customer_metrics
+FROM main_marts.mart_customer_metrics
 ORDER BY lifetime_value DESC
 LIMIT 10;
 
@@ -21,7 +22,7 @@ SELECT
     ROUND(SUM(lifetime_value), 2) as total_ltv,
     ROUND(AVG(lifetime_value), 2) as avg_ltv,
     ROUND(AVG(total_orders), 2) as avg_orders
-FROM mart_customer_metrics
+FROM main_marts.mart_customer_metrics
 GROUP BY customer_segment
 ORDER BY total_ltv DESC;
 
@@ -31,7 +32,7 @@ SELECT
     COUNT(*) as customer_count,
     ROUND(SUM(lifetime_value), 2) as total_ltv,
     ROUND(AVG(days_since_last_order), 0) as avg_days_since_order
-FROM mart_customer_metrics
+FROM main_marts.mart_customer_metrics
 GROUP BY activity_status
 ORDER BY 
     CASE activity_status
@@ -47,7 +48,7 @@ SELECT
     COUNT(*) as customer_count,
     ROUND(SUM(lifetime_value), 2) as total_ltv,
     ROUND(AVG(lifetime_value), 2) as avg_ltv
-FROM mart_customer_metrics
+FROM main_marts.mart_customer_metrics
 WHERE customer_segment IN ('VIP', 'High Value')
 GROUP BY state
 ORDER BY total_ltv DESC
@@ -60,7 +61,7 @@ SELECT
     ROUND(SUM(lifetime_value), 2) as cohort_ltv,
     ROUND(AVG(lifetime_value), 2) as avg_ltv_per_customer,
     ROUND(AVG(total_orders), 2) as avg_orders_per_customer
-FROM mart_customer_metrics
+FROM main_marts.mart_customer_metrics
 GROUP BY cohort_month
 ORDER BY cohort_month DESC
 LIMIT 12;
@@ -73,7 +74,7 @@ SELECT
     lifetime_value,
     last_order_date,
     days_since_last_order
-FROM mart_customer_metrics
+FROM main_marts.mart_customer_metrics
 WHERE activity_status = 'At Risk'
     AND customer_segment IN ('VIP', 'High Value')
 ORDER BY lifetime_value DESC

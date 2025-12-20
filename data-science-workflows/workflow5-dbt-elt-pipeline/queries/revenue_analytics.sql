@@ -1,5 +1,6 @@
 -- Revenue Analytics Queries
 -- Track revenue trends and patterns over time
+-- Note: Mart tables are in the main_marts schema
 
 -- 1. Last 30 days revenue trend
 SELECT 
@@ -8,7 +9,7 @@ SELECT
     revenue_7day_ma,
     order_count,
     avg_order_value
-FROM mart_daily_revenue
+FROM main_marts.mart_daily_revenue
 ORDER BY date DESC
 LIMIT 30;
 
@@ -20,7 +21,7 @@ SELECT
     ROUND(SUM(daily_revenue), 2) as monthly_revenue,
     ROUND(SUM(daily_profit), 2) as monthly_profit,
     ROUND(AVG(daily_revenue), 2) as avg_daily_revenue
-FROM mart_daily_revenue
+FROM main_marts.mart_daily_revenue
 GROUP BY order_month
 ORDER BY order_month DESC;
 
@@ -29,7 +30,7 @@ SELECT
     strftime(date, '%m') as month,
     order_year,
     ROUND(SUM(daily_revenue), 2) as revenue
-FROM mart_daily_revenue
+FROM main_marts.mart_daily_revenue
 GROUP BY month, order_year
 ORDER BY month, order_year;
 
@@ -48,7 +49,7 @@ SELECT
     COUNT(*) as occurrences,
     ROUND(AVG(daily_revenue), 2) as avg_revenue,
     ROUND(AVG(order_count), 2) as avg_orders
-FROM mart_daily_revenue
+FROM main_marts.mart_daily_revenue
 GROUP BY day_of_week, day_name
 ORDER BY day_of_week;
 
@@ -57,7 +58,7 @@ WITH monthly_revenue AS (
     SELECT 
         order_month,
         SUM(daily_revenue) as revenue
-    FROM mart_daily_revenue
+    FROM main_marts.mart_daily_revenue
     GROUP BY order_month
 )
 SELECT 
@@ -80,7 +81,7 @@ SELECT
     order_count,
     avg_order_value,
     unique_customers
-FROM mart_daily_revenue
+FROM main_marts.mart_daily_revenue
 ORDER BY daily_revenue DESC
 LIMIT 10;
 
@@ -89,7 +90,7 @@ SELECT
     r.order_month,
     p.category,
     ROUND(SUM(p.revenue), 2) as category_revenue
-FROM int_order_items p
-JOIN mart_daily_revenue r ON p.order_date_only = r.date
+FROM main_intermediate.int_order_items p
+JOIN main_marts.mart_daily_revenue r ON p.order_date_only = r.date
 GROUP BY r.order_month, p.category
 ORDER BY r.order_month DESC, category_revenue DESC;
