@@ -46,7 +46,7 @@ customer_metrics as (
             when first_order_date is not null then
                 round(
                     cast(total_orders as decimal) / 
-                    nullif(cast(julianday(last_order_date) - julianday(first_order_date) as decimal) / 30.0, 0),
+                    nullif(cast(datediff('day', first_order_date, last_order_date) as decimal) / 30.0, 0),
                     2
                 )
             else 0

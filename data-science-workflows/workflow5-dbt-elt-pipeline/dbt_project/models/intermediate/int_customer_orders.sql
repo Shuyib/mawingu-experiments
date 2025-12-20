@@ -32,7 +32,7 @@ customer_orders as (
         min(o.order_date) as first_order_date,
         max(o.order_date) as last_order_date,
         -- Calculate days since last order
-        cast(julianday('now') - julianday(max(o.order_date)) as integer) as days_since_last_order
+        cast(datediff('day', max(o.order_date), current_timestamp) as integer) as days_since_last_order
     from customers c
     left join order_items o on c.customer_id = o.customer_id
     group by 

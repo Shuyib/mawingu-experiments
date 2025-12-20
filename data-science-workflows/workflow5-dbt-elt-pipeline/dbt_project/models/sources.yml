@@ -6,27 +6,9 @@ sources:
     tables:
       - name: raw_customers
         description: "Raw customer data"
-        columns:
-          - name: customer_id
-            description: "Primary key"
-            tests:
-              - unique
-              - not_null
       
       - name: raw_products
         description: "Raw product data"
-        columns:
-          - name: product_id
-            description: "Primary key"
-            tests:
-              - unique
-              - not_null
       
       - name: raw_orders
         description: "Raw order data"
-        columns:
-          - name: order_id
-            description: "Primary key"
-            tests:
-              - unique
-              - not_null

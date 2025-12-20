@@ -96,9 +96,9 @@ SELECT
     product_name,
     category,
     total_revenue,
-    DATEDIFF('day', first_sold_date, last_sold_date) as days_on_sale,
-    ROUND(units_sold::DECIMAL / NULLIF(DATEDIFF('day', first_sold_date, last_sold_date), 0), 2) as units_per_day
+    datediff('day', first_sold_date, last_sold_date) as days_on_sale,
+    ROUND(units_sold::DECIMAL / NULLIF(datediff('day', first_sold_date, last_sold_date), 0), 2) as units_per_day
 FROM mart_product_performance
-WHERE DATEDIFF('day', first_sold_date, last_sold_date) > 30
+WHERE datediff('day', first_sold_date, last_sold_date) > 30
 ORDER BY units_per_day DESC
 LIMIT 20;
