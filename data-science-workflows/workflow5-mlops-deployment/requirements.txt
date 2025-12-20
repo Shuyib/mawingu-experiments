@@ -16,7 +16,7 @@ pydantic==2.8.2
 evidently==0.4.33
 
 # Utilities
-python-multipart==0.0.9
+python-multipart==0.0.18
 python-dotenv==1.0.1
 requests==2.32.3
 
