@@ -10,18 +10,18 @@ from datetime import datetime
 from typing import Dict, Any, Optional
 from pathlib import Path
 
-from evidently.report import Report
-from evidently.metric_preset import (
-    DataDriftPreset,
-    DataQualityPreset,
-    TargetDriftPreset,
-    ClassificationPreset
-)
-from evidently.metrics import (
-    DatasetDriftMetric,
-    DatasetMissingValuesMetric,
-    ColumnDriftMetric
-)
+try:
+    from evidently.report import Report
+    from evidently.metric_preset import (
+        DataDriftPreset,
+        DataQualityPreset,
+        TargetDriftPreset,
+        ClassificationPreset
+    )
+    EVIDENTLY_AVAILABLE = True
+except ImportError:
+    EVIDENTLY_AVAILABLE = False
+    print("Evidently not available. Install with: pip install evidently")
 
 
 class ModelMonitor:
@@ -41,6 +41,9 @@ class ModelMonitor:
         
         self.drift_history = []
         
+        if not EVIDENTLY_AVAILABLE:
+            print("WARNING: Evidently not installed. Monitoring features will be limited.")
+        
     def generate_data_drift_report(
         self,
         current_data: pd.DataFrame,
@@ -56,6 +59,9 @@ class ModelMonitor:
         Returns:
             Dictionary with drift metrics
         """
+        if not EVIDENTLY_AVAILABLE:
+            return self._basic_drift_detection(current_data)
+        
         # Create report
         report = Report(metrics=[
             DataDriftPreset(),
@@ -112,6 +118,37 @@ class ModelMonitor:
         
         return drift_metrics
     
+    def _basic_drift_detection(self, current_data: pd.DataFrame) -> Dict[str, Any]:
+        """Basic drift detection without Evidently."""
+        drift_metrics = {
+            "timestamp": datetime.now().isoformat(),
+            "dataset_drift": False,
+            "n_drifted_features": 0,
+            "drift_share": 0.0,
+            "drifted_features": [],
+            "note": "Basic drift detection (Evidently not available)"
+        }
+        
+        # Simple statistical comparison
+        drifted = []
+        for col in self.reference_data.columns:
+            if col in current_data.columns:
+                ref_mean = self.reference_data[col].mean()
+                cur_mean = current_data[col].mean()
+                ref_std = self.reference_data[col].std()
+                
+                # Check if current mean is outside 2 std dev
+                if abs(cur_mean - ref_mean) > 2 * ref_std:
+                    drifted.append(col)
+        
+        drift_metrics["drifted_features"] = drifted
+        drift_metrics["n_drifted_features"] = len(drifted)
+        drift_metrics["drift_share"] = len(drifted) / len(self.reference_data.columns)
+        drift_metrics["dataset_drift"] = len(drifted) > 0
+        
+        self.drift_history.append(drift_metrics)
+        return drift_metrics
+    
     def generate_model_performance_report(
         self,
         current_data: pd.DataFrame,
@@ -131,6 +168,25 @@ class ModelMonitor:
         Returns:
             Dictionary with performance metrics
         """
+        performance_metrics = {
+            "timestamp": datetime.now().isoformat(),
+            "has_ground_truth": current_targets is not None,
+            "n_predictions": len(current_predictions)
+        }
+        
+        # Add accuracy if ground truth available
+        if current_targets is not None:
+            from sklearn.metrics import accuracy_score, f1_score
+            performance_metrics["accuracy"] = float(accuracy_score(current_targets, current_predictions))
+            performance_metrics["f1_score"] = float(f1_score(current_targets, current_predictions, average='weighted'))
+        
+        if not EVIDENTLY_AVAILABLE:
+            # Save basic metrics
+            metrics_path = self.output_dir / f"performance_metrics_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+            with open(metrics_path, "w") as f:
+                json.dump(performance_metrics, f, indent=2)
+            return performance_metrics
+        
         # Add predictions to dataframe
         current_df = current_data.copy()
         current_df['prediction'] = current_predictions
@@ -174,21 +230,6 @@ class ModelMonitor:
             html_path = self.output_dir / f"model_performance_report_{timestamp}.html"
             report.save_html(str(html_path))
             print(f"Performance report saved to: {html_path}")
-        
-        # Extract metrics
-        report_dict = report.as_dict()
-        
-        performance_metrics = {
-            "timestamp": datetime.now().isoformat(),
-            "has_ground_truth": current_targets is not None,
-            "n_predictions": len(current_predictions)
-        }
-        
-        # Add accuracy if ground truth available
-        if current_targets is not None:
-            from sklearn.metrics import accuracy_score, f1_score
-            performance_metrics["accuracy"] = float(accuracy_score(current_targets, current_predictions))
-            performance_metrics["f1_score"] = float(f1_score(current_targets, current_predictions, average='weighted'))
         
         # Save metrics
         metrics_path = self.output_dir / f"performance_metrics_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"

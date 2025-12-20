@@ -35,8 +35,32 @@ class WineFeatures(BaseModel):
     proline: float = Field(..., description="Proline content", ge=0)
     
     def to_dataframe(self) -> pd.DataFrame:
-        """Convert to pandas DataFrame for model input."""
-        return pd.DataFrame([self.dict()])
+        """Convert to pandas DataFrame for model input with correct column order."""
+        # Use the exact column order from sklearn's wine dataset
+        columns = [
+            'alcohol', 'malic_acid', 'ash', 'alcalinity_of_ash', 
+            'magnesium', 'total_phenols', 'flavanoids', 'nonflavanoid_phenols',
+            'proanthocyanins', 'color_intensity', 'hue', 
+            'od280/od315_of_diluted_wines', 'proline'
+        ]
+        
+        data = {
+            'alcohol': self.alcohol,
+            'malic_acid': self.malic_acid,
+            'ash': self.ash,
+            'alcalinity_of_ash': self.alcalinity_of_ash,
+            'magnesium': self.magnesium,
+            'total_phenols': self.total_phenols,
+            'flavanoids': self.flavanoids,
+            'nonflavanoid_phenols': self.nonflavanoid_phenols,
+            'proanthocyanins': self.proanthocyanins,
+            'color_intensity': self.color_intensity,
+            'hue': self.hue,
+            'od280/od315_of_diluted_wines': self.od280_od315_of_diluted_wines,
+            'proline': self.proline
+        }
+        
+        return pd.DataFrame([data], columns=columns)
 
 
 class PredictionRequest(BaseModel):
@@ -128,17 +152,27 @@ class ModelRegistry:
         model, used_model_name = self.get_model(model_name)
         self.prediction_counts[used_model_name] += 1
         
+        # Make prediction
         prediction = model.predict(features)
         
-        # Get prediction probabilities if available
+        # Get prediction probabilities
         try:
-            probabilities = model.predict_proba(features)
-            if hasattr(probabilities, 'tolist'):
-                probabilities = probabilities[0].tolist()
+            # For MLflow pyfunc models, we need to use the underlying model
+            if hasattr(model, '_model_impl'):
+                underlying_model = model._model_impl.python_model
+                if hasattr(underlying_model, 'predict_proba'):
+                    probabilities = underlying_model.predict_proba(features)
+                    probabilities = probabilities[0].tolist()
+                else:
+                    probabilities = [1.0 if i == int(prediction[0]) else 0.0 for i in range(3)]
             else:
-                probabilities = [float(p) for p in probabilities[0]]
-        except:
-            probabilities = [0.0, 0.0, 0.0]
+                # Direct sklearn model
+                probabilities = model.predict_proba(features)
+                probabilities = probabilities[0].tolist()
+        except Exception as e:
+            print(f"Could not get probabilities: {e}")
+            # Return dummy probabilities
+            probabilities = [1.0 if i == int(prediction[0]) else 0.0 for i in range(3)]
         
         return int(prediction[0]), probabilities, used_model_name
 

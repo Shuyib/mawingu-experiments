@@ -137,7 +137,7 @@ def train_xgboost_model(X_train, y_train, X_test, y_test, params):
         os.remove("feature_importance.csv")
         
         # Log model
-        mlflow.xgboost.log_model(
+        mlflow.sklearn.log_model(
             model,
             "model",
             registered_model_name="wine_classifier_xgb"
@@ -155,12 +155,17 @@ def main():
                         default='both', help='Model type to train')
     args = parser.parse_args()
     
-    # Set MLflow experiment
-    mlflow.set_experiment(args.experiment_name)
-    
     # Set MLflow tracking URI (use local directory if not set)
     if not os.getenv('MLFLOW_TRACKING_URI'):
         mlflow.set_tracking_uri("file:./mlruns")
+    
+    # Set or create MLflow experiment
+    experiment = mlflow.get_experiment_by_name(args.experiment_name)
+    if experiment is None:
+        experiment_id = mlflow.create_experiment(args.experiment_name)
+        mlflow.set_experiment(args.experiment_name)
+    else:
+        mlflow.set_experiment(args.experiment_name)
     
     print("Loading data...")
     X_train, X_test, y_train, y_test = load_data()
