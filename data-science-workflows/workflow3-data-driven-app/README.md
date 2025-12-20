@@ -6,6 +6,34 @@ This is an interesting use case since the data loader is directly specified in t
 
 The data loader is responsible for generating data and uploading it to an object storage. The data is then used by the time series plotter to plot the data. It might help to have an aggregation script that runs maybe every midnight to have a single file to load the data. Additionally, you can use a database for example PostgreSQL (Plus since you can make vector databases) or MySQL to improve the application load times.
 
+## Workflow Architecture
+
+The timeseries plot application now uses SQLite for data persistence:
+
+```mermaid
+flowchart LR
+    A[S3 Object Storage] -->|Download CSV| B[load_s3_to_database]
+    B -->|Insert Data| C[(SQLite Database)]
+    B -->|Delete CSV| D[Cleanup]
+    C -->|Query| E[query_timeseries_data]
+    E -->|DataFrame| F[plot_data_from_dataframe]
+    F -->|Generate PNG| G[lineplot.png]
+    G -->|Upload| H[S3 Object Storage]
+    G -->|Delete PNG| I[Cleanup]
+    
+    style C fill:#90EE90
+    style A fill:#87CEEB
+    style H fill:#87CEEB
+    style D fill:#FFB6C1
+    style I fill:#FFB6C1
+```
+
+**Key Benefits:**
+- **Data Persistence**: Historical data accumulates in SQLite across runs
+- **Reduced S3 Calls**: Local database caching minimizes API requests
+- **Query Flexibility**: Easy to add filters, aggregations, and time windows
+- **Scalable**: Simple migration path to PostgreSQL or TimescaleDB
+
 # Setup your digital ocean spaces 
 
 ```bash
