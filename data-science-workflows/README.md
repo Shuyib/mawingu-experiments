@@ -10,8 +10,22 @@ Data-driven application with data loaders and time series plotting. Demonstrates
 ### workflow4-data-science-api
 Machine learning API for predictions. Exposes trained models as REST APIs that can be queried for inference.
 
-### workflow5-dbt-elt-pipeline
-**NEW!** Modern ELT pipeline using dbt (data build tool) for transformations, DuckDB as the data warehouse, and Dagster for orchestration. Demonstrates:
+## Workflow 5: MLOps Deployment ⭐ NEW
+
+Complete production MLOps pipeline demonstrating:
+- Model training with scikit-learn and XGBoost
+- Experiment tracking with MLflow
+- FastAPI inference service with real-time and batch predictions
+- Docker containerization and docker-compose orchestration
+- Kubernetes deployment with auto-scaling
+- Model monitoring and drift detection with Evidently
+- A/B testing framework for model versions
+
+See [workflow5-mlops-deployment/README.md](workflow5-mlops-deployment/README.md) for detailed documentation.
+
+### workflow5-dbt-elt-pipeline ⭐ NEW
+
+Modern ELT pipeline using dbt (data build tool) for transformations, DuckDB as the data warehouse, and Dagster for orchestration. Demonstrates:
 - Data extraction from multiple sources
 - Transformation layers (staging, intermediate, marts)
 - Data quality testing
