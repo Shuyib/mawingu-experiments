@@ -21,7 +21,9 @@ def plot_data_from_dataframe(df):
 
     """
     assert isinstance(df, pd.DataFrame), "Input must be a pandas DataFrame"
-    assert 'x' in df.columns and 'y' in df.columns, "DataFrame must have 'x' and 'y' columns"
+    assert (
+        "x" in df.columns and "y" in df.columns
+    ), "DataFrame must have 'x' and 'y' columns"
     plt.plot(df.x, df.y)
     plt.title("Data sampled from a normal distribution mean = 0 and std = 1")
     return plt.savefig("lineplot.png")
