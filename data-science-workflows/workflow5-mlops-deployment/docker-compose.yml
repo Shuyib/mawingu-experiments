@@ -11,7 +11,7 @@ services:
       - ./mlruns:/mlruns
       - ./models:/models
     command: >
-      sh -c "pip install mlflow==2.9.2 &&
+      sh -c "pip install mlflow==2.15.1 &&
              mlflow server 
              --backend-store-uri file:///mlruns 
              --default-artifact-root file:///models 

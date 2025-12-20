@@ -143,6 +143,10 @@ def train_xgboost_model(X_train, y_train, X_test, y_test, params):
             registered_model_name="wine_classifier_xgb"
         )
         
+        # Note: Using sklearn.log_model for XGBoost because mlflow.xgboost.log_model
+        # has compatibility issues with XGBClassifier._get_type() in some versions.
+        # The sklearn interface works reliably for both frameworks.
+        
         print(f"XGBoost - Accuracy: {accuracy:.4f}, F1: {f1:.4f}")
         return run.info.run_id, accuracy
 

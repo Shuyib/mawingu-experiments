@@ -23,7 +23,7 @@ spec:
           - /bin/sh
           - -c
           - |
-            pip install mlflow==2.9.2
+            pip install mlflow==2.15.1
             mlflow server --backend-store-uri file:///mlruns --default-artifact-root file:///models --host 0.0.0.0 --port 5000
         ports:
         - containerPort: 5000
