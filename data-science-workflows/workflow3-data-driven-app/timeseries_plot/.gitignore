@@ -1,0 +1,5 @@
+*.db
+*.db-journal
+*.csv
+data.csv
+lineplot.png
