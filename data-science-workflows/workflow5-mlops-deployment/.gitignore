@@ -14,6 +14,7 @@ build/
 # MLflow
 mlruns/
 mlartifacts/
+mlflow.db
 
 # Models
 models/*.pkl
