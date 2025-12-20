@@ -98,8 +98,11 @@ SELECT
     category,
     total_revenue,
     datediff('day', first_sold_date, last_sold_date) as days_on_sale,
-    ROUND(units_sold::DECIMAL / NULLIF(datediff('day', first_sold_date, last_sold_date), 0), 2) as units_per_day
+    CASE
+        WHEN datediff('day', first_sold_date, last_sold_date) = 0 THEN units_sold::DECIMAL
+        ELSE ROUND(units_sold::DECIMAL / datediff('day', first_sold_date, last_sold_date), 2)
+    END as units_per_day
 FROM main_marts.mart_product_performance
-WHERE datediff('day', first_sold_date, last_sold_date) > 30
+WHERE datediff('day', first_sold_date, last_sold_date) >= 0
 ORDER BY units_per_day DESC
 LIMIT 20;

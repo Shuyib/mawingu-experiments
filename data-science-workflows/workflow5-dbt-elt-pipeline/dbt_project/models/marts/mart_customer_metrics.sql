@@ -43,12 +43,15 @@ customer_metrics as (
         end as activity_status,
         -- Purchase frequency (orders per month)
         case
-            when first_order_date is not null then
-                round(
-                    cast(total_orders as decimal) / 
-                    nullif(cast(datediff('day', first_order_date, last_order_date) as decimal) / 30.0, 0),
-                    2
-                )
+            when first_order_date is not null and total_orders > 0 then
+                case
+                    when datediff('day', first_order_date, last_order_date) = 0 then total_orders
+                    else round(
+                        cast(total_orders as decimal) / 
+                        (cast(datediff('day', first_order_date, last_order_date) as decimal) / 30.0),
+                        2
+                    )
+                end
             else 0
         end as orders_per_month
     from customer_orders

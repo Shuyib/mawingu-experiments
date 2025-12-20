@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
       - name: dbt-pipeline
-        image: registry.digitalocean.com/<your-registry>/workflow5-dbt-elt:v1
+        # Set REGISTRY environment variable: export REGISTRY=registry.digitalocean.com/<your-registry>
+        image: ${REGISTRY}/workflow5-dbt-elt:v1
         ports:
         - containerPort: 3000
           name: dagster-ui

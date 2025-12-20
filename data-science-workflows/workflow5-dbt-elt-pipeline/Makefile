@@ -42,8 +42,9 @@ run:
 
 push:
 	# Push to Docker registry
-	docker tag workflow5-dbt-elt registry.digitalocean.com/<my-registry>/workflow5-dbt-elt:v1
-	docker push registry.digitalocean.com/<my-registry>/workflow5-dbt-elt:v1
+	# Set REGISTRY environment variable first: export REGISTRY=registry.digitalocean.com/<my-registry>
+	docker tag workflow5-dbt-elt ${REGISTRY}/workflow5-dbt-elt:v1
+	docker push ${REGISTRY}/workflow5-dbt-elt:v1
 
 deploy:
 	# Deploy to Kubernetes

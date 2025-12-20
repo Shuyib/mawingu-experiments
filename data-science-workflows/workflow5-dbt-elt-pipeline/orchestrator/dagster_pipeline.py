@@ -114,7 +114,7 @@ def analytics_validation(context: AssetExecutionContext) -> MaterializeResult:
     result = conn.execute("""
         SELECT COUNT(*) as customer_count, 
                SUM(lifetime_value) as total_ltv
-        FROM mart_customer_metrics
+        FROM main_marts.mart_customer_metrics
     """).fetchone()
     validations['customer_metrics'] = {
         'customer_count': result[0],
@@ -125,7 +125,7 @@ def analytics_validation(context: AssetExecutionContext) -> MaterializeResult:
     result = conn.execute("""
         SELECT COUNT(*) as product_count,
                SUM(total_revenue) as total_revenue
-        FROM mart_product_performance
+        FROM main_marts.mart_product_performance
     """).fetchone()
     validations['product_performance'] = {
         'product_count': result[0],
@@ -136,7 +136,7 @@ def analytics_validation(context: AssetExecutionContext) -> MaterializeResult:
     result = conn.execute("""
         SELECT COUNT(*) as days,
                MAX(date) as latest_date
-        FROM mart_daily_revenue
+        FROM main_marts.mart_daily_revenue
     """).fetchone()
     validations['daily_revenue'] = {
         'days': result[0],
