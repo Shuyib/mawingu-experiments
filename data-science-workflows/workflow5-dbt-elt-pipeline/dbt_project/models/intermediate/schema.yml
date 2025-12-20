@@ -1,0 +1,38 @@
+version: 2
+
+models:
+  - name: int_order_items
+    description: "Intermediate table joining orders with products, calculating revenue and profit"
+    columns:
+      - name: order_id
+        description: "Order line item identifier"
+        tests:
+          - not_null
+      
+      - name: revenue
+        description: "Revenue from this order line (quantity * price)"
+        tests:
+          - not_null
+      
+      - name: profit
+        description: "Profit from this order line (revenue - cost)"
+        tests:
+          - not_null
+
+  - name: int_customer_orders
+    description: "Customer-level aggregation of order metrics"
+    columns:
+      - name: customer_id
+        description: "Unique customer identifier"
+        tests:
+          - unique
+          - not_null
+      
+      - name: total_orders
+        description: "Total number of completed orders"
+      
+      - name: lifetime_value
+        description: "Total revenue from this customer"
+      
+      - name: avg_order_value
+        description: "Average order value for this customer"

@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dbt-pipeline
+  labels:
+    app: dbt-pipeline
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dbt-pipeline
+  template:
+    metadata:
+      labels:
+        app: dbt-pipeline
+    spec:
+      containers:
+      - name: dbt-pipeline
+        # Set REGISTRY environment variable: export REGISTRY=registry.digitalocean.com/<your-registry>
+        image: ${REGISTRY}/workflow5-dbt-elt:v1
+        ports:
+        - containerPort: 3000
+          name: dagster-ui
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        env:
+        - name: DAGSTER_HOME
+          value: "/app"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dbt-pipeline-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: dbt-pipeline
+  ports:
+  - port: 3000
+    targetPort: 3000
+    protocol: TCP
+    name: dagster-ui

@@ -1,0 +1,85 @@
+version: 2
+
+models:
+  - name: stg_customers
+    description: "Staging table for customer data with standardized fields"
+    columns:
+      - name: customer_id
+        description: "Unique identifier for each customer"
+        tests:
+          - unique
+          - not_null
+      
+      - name: email
+        description: "Customer email address (lowercase)"
+        tests:
+          - not_null
+      
+      - name: created_at
+        description: "Timestamp when customer was created"
+        tests:
+          - not_null
+
+  - name: stg_products
+    description: "Staging table for product data with calculated profit margins"
+    columns:
+      - name: product_id
+        description: "Unique identifier for each product"
+        tests:
+          - unique
+          - not_null
+      
+      - name: product_name
+        description: "Name of the product"
+        tests:
+          - not_null
+      
+      - name: price
+        description: "Selling price of the product"
+        tests:
+          - not_null
+      
+      - name: cost
+        description: "Cost of the product"
+        tests:
+          - not_null
+      
+      - name: profit_margin_pct
+        description: "Profit margin percentage"
+
+  - name: stg_orders
+    description: "Staging table for order data with date components"
+    columns:
+      - name: order_id
+        description: "Unique identifier for each order line item"
+        tests:
+          - unique
+          - not_null
+      
+      - name: customer_id
+        description: "Foreign key to customers table"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_customers')
+              field: customer_id
+      
+      - name: product_id
+        description: "Foreign key to products table"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_products')
+              field: product_id
+      
+      - name: quantity
+        description: "Quantity ordered"
+        tests:
+          - not_null
+      
+      - name: status
+        description: "Order status"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['completed', 'pending', 'cancelled', 'refunded']

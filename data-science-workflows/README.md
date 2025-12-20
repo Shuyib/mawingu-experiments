@@ -4,25 +4,23 @@ Hope y'all pumped.
 
 ## Workflows
 
-### Workflow 3: Data-Driven App
-Data science application with data loaders and plotters deployed on Kubernetes.
+### workflow3-data-driven-app
+Data-driven application with data loaders and time series plotting. Demonstrates real-time data generation and visualization in Kubernetes.
 
-### Workflow 4: Data Science API
-Flask-based API for serving ML predictions (iris classification) with Docker and Kubernetes deployment.
+### workflow4-data-science-api
+Machine learning API for predictions. Exposes trained models as REST APIs that can be queried for inference.
 
-### Workflow 5: MLOps Deployment ⭐ NEW
-Complete production MLOps pipeline demonstrating:
-- Model training with scikit-learn and XGBoost
-- Experiment tracking with MLflow
-- FastAPI inference service with real-time and batch predictions
-- Docker containerization and docker-compose orchestration
-- Kubernetes deployment with auto-scaling
-- Model monitoring and drift detection with Evidently
-- A/B testing framework for model versions
+### workflow5-dbt-elt-pipeline
+**NEW!** Modern ELT pipeline using dbt (data build tool) for transformations, DuckDB as the data warehouse, and Dagster for orchestration. Demonstrates:
+- Data extraction from multiple sources
+- Transformation layers (staging, intermediate, marts)
+- Data quality testing
+- Analytics-ready datasets
+- Python orchestration
 
-See [workflow5-mlops-deployment/README.md](workflow5-mlops-deployment/README.md) for detailed documentation.
+See [workflow5-dbt-elt-pipeline/README.md](workflow5-dbt-elt-pipeline/README.md) for detailed setup and usage instructions.
 
-Credit:  
+## Credits
 https://github.com/docker-for-data-science/docker-for-data-science-tutorial  
 Review the data science app and api example https://docs.google.com/presentation/d/1LkeJc-O5k0LQvzcFokj3yKjcEDns10JGX9uHK0igU8M/edit#slide=id.g2630fb7e0c_0_12  
 https://github.com/outerbounds/dsbook/tree/main/chapter-6 using forcast1.py & forcast2.py  

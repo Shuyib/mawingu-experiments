@@ -1,0 +1,13 @@
+ecommerce_pipeline:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: ../data/warehouse.duckdb
+      schema: main
+      threads: 4
+    prod:
+      type: duckdb
+      path: ../data/warehouse_prod.duckdb
+      schema: main
+      threads: 8
