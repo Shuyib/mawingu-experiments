@@ -1,0 +1,33 @@
+# Training Dockerfile - for model training with MLflow
+FROM python:3.10-slim
+
+LABEL maintainer="MLOps Team"
+LABEL description="Docker image for ML model training with MLflow tracking"
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements and install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Copy training scripts
+COPY training/ ./training/
+COPY data/ ./data/
+
+# Create directories for MLflow artifacts
+RUN mkdir -p /app/mlruns /app/models
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV MLFLOW_TRACKING_URI=file:///app/mlruns
+
+# Default command runs training
+CMD ["python", "training/train_model.py", "--model-type", "both"]
