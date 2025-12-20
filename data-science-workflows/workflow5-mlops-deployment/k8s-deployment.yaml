@@ -1,0 +1,209 @@
+---
+# MLflow Tracking Server Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mlflow-server
+  labels:
+    app: mlflow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mlflow
+  template:
+    metadata:
+      labels:
+        app: mlflow
+    spec:
+      containers:
+      - name: mlflow
+        image: python:3.10-slim
+        command:
+          - /bin/sh
+          - -c
+          - |
+            pip install mlflow==2.9.2
+            mlflow server --backend-store-uri file:///mlruns --default-artifact-root file:///models --host 0.0.0.0 --port 5000
+        ports:
+        - containerPort: 5000
+        volumeMounts:
+        - name: mlflow-data
+          mountPath: /mlruns
+        - name: model-data
+          mountPath: /models
+      volumes:
+      - name: mlflow-data
+        persistentVolumeClaim:
+          claimName: mlflow-pvc
+      - name: model-data
+        persistentVolumeClaim:
+          claimName: models-pvc
+
+---
+# MLflow Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: mlflow-service
+spec:
+  selector:
+    app: mlflow
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+  type: LoadBalancer
+
+---
+# Inference Service Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inference-service
+  labels:
+    app: inference
+    version: v1
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: inference
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: inference
+        version: v1
+    spec:
+      containers:
+      - name: inference
+        image: your-registry/mlops-inference:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: MLFLOW_TRACKING_URI
+          value: "http://mlflow-service:5000"
+        - name: MODEL_PATH
+          value: "/app/models"
+        volumeMounts:
+        - name: model-data
+          mountPath: /app/models
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: model-data
+        persistentVolumeClaim:
+          claimName: models-pvc
+
+---
+# Inference Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: inference-service
+spec:
+  selector:
+    app: inference
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+  type: LoadBalancer
+
+---
+# Horizontal Pod Autoscaler for Inference Service
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: inference-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: inference-service
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+
+---
+# PersistentVolumeClaim for MLflow
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mlflow-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+# PersistentVolumeClaim for Models
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: models-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+# CronJob for Model Retraining
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: model-retraining
+spec:
+  schedule: "0 2 * * 0"  # Weekly on Sunday at 2 AM
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: training
+            image: your-registry/mlops-training:latest
+            env:
+            - name: MLFLOW_TRACKING_URI
+              value: "http://mlflow-service:5000"
+            volumeMounts:
+            - name: model-data
+              mountPath: /app/models
+          restartPolicy: OnFailure
+          volumes:
+          - name: model-data
+            persistentVolumeClaim:
+              claimName: models-pvc
