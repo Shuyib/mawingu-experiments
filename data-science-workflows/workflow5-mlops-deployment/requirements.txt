@@ -5,7 +5,7 @@ pandas==2.2.2
 numpy==1.26.4
 
 # MLflow for experiment tracking and model registry
-mlflow==2.15.1
+mlflow==3.5.0rc0
 
 # FastAPI for inference endpoints
 fastapi==0.112.0
