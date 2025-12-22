@@ -48,7 +48,11 @@ def init_database(db_path):
 
 
 def load_s3_to_database(filename, db_path):
-    """Download data from S3 and insert into SQLite database
+    """Download data from S3 and insert only new data into SQLite database
+
+    This function optimizes data loading by checking for existing records
+    and only inserting new data points, preventing duplicates and speeding
+    up the application when handling large datasets.
 
     Parameters
     ----------
@@ -72,7 +76,7 @@ def load_s3_to_database(filename, db_path):
     Example
     -------
     load_s3_to_database("data.csv", "timeseries_data.db") downloads CSV from S3
-    and inserts data into database
+    and inserts only new data into database
 
     """
     try:
@@ -84,11 +88,41 @@ def load_s3_to_database(filename, db_path):
 
         # Read CSV file
         assert os.path.isfile(filename), '"{}" is not a valid path'.format(filename)
-        df = pd.read_csv(filename)
+        df_new = pd.read_csv(filename)
 
-        # Insert data into database
         conn = sqlite3.connect(db_path)
-        df.to_sql("timeseries", conn, if_exists="append", index=False)
+
+        # Check if database has existing data
+        cursor = conn.cursor()
+        cursor.execute("SELECT COUNT(*) FROM timeseries")
+        existing_count = cursor.fetchone()[0]
+
+        if existing_count > 0:
+            # Load existing data to identify duplicates
+            df_existing = pd.read_sql_query("SELECT x, y FROM timeseries", conn)
+
+            # Find new records by comparing x,y pairs
+            # Create a set of tuples for faster lookup
+            existing_pairs = set(zip(df_existing["x"], df_existing["y"]))
+            new_mask = ~df_new.apply(
+                lambda row: (row["x"], row["y"]) in existing_pairs, axis=1
+            )
+            df_to_insert = df_new[new_mask]
+
+            if len(df_to_insert) > 0:
+                df_to_insert.to_sql("timeseries", conn, if_exists="append", index=False)
+                logging.info(
+                    "Inserted %d new records (skipped %d duplicates)",
+                    len(df_to_insert),
+                    len(df_new) - len(df_to_insert),
+                )
+            else:
+                logging.info("No new records to insert, all data already exists")
+        else:
+            # No existing data, insert all records
+            df_new.to_sql("timeseries", conn, if_exists="append", index=False)
+            logging.info("Inserted %d records into empty database", len(df_new))
+
         conn.close()
 
         # Clean up CSV file after loading to database
