@@ -18,7 +18,7 @@ evidently==0.4.33
 # Utilities
 python-multipart==0.0.9
 python-dotenv==1.0.1
-requests==2.32.3
+requests==2.32.4
 
 # Testing
 pytest==8.3.2
