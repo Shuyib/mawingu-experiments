@@ -101,13 +101,12 @@ def load_s3_to_database(filename, db_path):
             # Load existing data to identify duplicates
             df_existing = pd.read_sql_query("SELECT x, y FROM timeseries", conn)
 
-            # Find new records by comparing x,y pairs
-            # Create a set of tuples for faster lookup
-            existing_pairs = set(zip(df_existing["x"], df_existing["y"]))
-            new_mask = ~df_new.apply(
-                lambda row: (row["x"], row["y"]) in existing_pairs, axis=1
+            # Find new records using merge (more efficient than apply+lambda)
+            # Use indicator to mark records only in df_new (left_only)
+            df_merged = df_new.merge(
+                df_existing, on=["x", "y"], how="left", indicator=True
             )
-            df_to_insert = df_new[new_mask]
+            df_to_insert = df_merged[df_merged["_merge"] == "left_only"][["x", "y"]]
 
             if len(df_to_insert) > 0:
                 df_to_insert.to_sql("timeseries", conn, if_exists="append", index=False)
