@@ -1,0 +1,8 @@
+*.db
+*.db-journal
+*.csv
+data.csv
+lineplot.png
+__pycache__/
+*.py[cod]
+*$py.class

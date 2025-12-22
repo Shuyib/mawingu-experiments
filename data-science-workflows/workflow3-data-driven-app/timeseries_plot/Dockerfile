@@ -4,8 +4,8 @@ FROM python:3.9.18-slim
 # Meta-data
 LABEL maintainer="Shuyib <>" \
       description="Docker Data Science Workflow #3: Data Driven Application\
-      makes a matplotlib plot whose data is retrieved from object storage\
-      which is then uploaded back to object storage."
+      retrieves data from S3 object storage, stores it in SQLite database,\
+      generates matplotlib timeseries plots, and uploads results back to object storage."
 
 # Set the working directory to /app
 WORKDIR /app

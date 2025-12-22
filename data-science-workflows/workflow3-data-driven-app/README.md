@@ -6,6 +6,46 @@ This is an interesting use case since the data loader is directly specified in t
 
 The data loader is responsible for generating data and uploading it to an object storage. The data is then used by the time series plotter to plot the data. It might help to have an aggregation script that runs maybe every midnight to have a single file to load the data. Additionally, you can use a database for example PostgreSQL (Plus since you can make vector databases) or MySQL to improve the application load times.
 
+## Workflow Architecture
+
+The timeseries plot application now uses SQLite for data persistence with incremental loading optimization:
+
+```mermaid
+flowchart LR
+    A[S3 Object Storage] -->|Download CSV| B[load_s3_to_database]
+    B -->|Check Existing Data| C[(SQLite Database)]
+    B -->|Compare Records| J[Duplicate Detection]
+    J -->|Insert Only New| C
+    B -->|Delete CSV| D[Cleanup]
+    C -->|Query| E[query_timeseries_data]
+    E -->|DataFrame| F[plot_data_from_dataframe]
+    F -->|Generate PNG| G[lineplot.png]
+    G -->|Upload| H[S3 Object Storage]
+    G -->|Delete PNG| I[Cleanup]
+    
+    style C fill:#90EE90
+    style A fill:#87CEEB
+    style H fill:#87CEEB
+    style D fill:#FFB6C1
+    style I fill:#FFB6C1
+    style J fill:#FFD700
+```
+
+**Key Benefits:**
+- **Data Persistence**: Historical data accumulates in SQLite across runs
+- **Incremental Loading**: Only new data is inserted, preventing duplicates and speeding up large datasets
+- **Reduced S3 Calls**: Local database caching minimizes API requests
+- **Query Flexibility**: Easy to add filters, aggregations, and time windows
+- **Scalable**: Simple migration path to PostgreSQL or TimescaleDB
+
+**Performance Optimization:**
+
+The `load_s3_to_database` function now performs intelligent duplicate detection:
+- Compares incoming data against existing records (x,y pairs)
+- Only inserts new data points not already in the database
+- Logs statistics: `Inserted N new records (skipped M duplicates)`
+- Significantly faster for large datasets with overlapping data
+
 # Setup your digital ocean spaces 
 
 ```bash
