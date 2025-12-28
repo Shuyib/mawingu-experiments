@@ -179,3 +179,172 @@ Uploaded data expectations to object storage True
 loaded data into working directory for now  
 made plot saved it in directory for now  
 Uploaded data to object storage True  
+
+# Troubleshooting
+
+## Common S3/Database Errors
+
+### Missing Environment Variables
+**Error:** `EnvironmentError: Missing required environment variables: ...`
+
+**Solution:** Ensure all required environment variables are set:
+```bash
+export ENDPOINT_URL=https://ams3.digitaloceanspaces.com
+export SECRET_KEY=your_secret_key
+export SPACES_ID=your_spaces_id
+export SPACES_NAME=your_spaces_name
+```
+
+Verify they are set:
+```bash
+echo $ENDPOINT_URL
+echo $SPACES_NAME
+```
+
+### S3 Connection Failures
+**Error:** `S3 upload/download attempt failed - Code: ...`
+
+**Solutions:**
+- Check your internet connection
+- Verify your S3 credentials are correct
+- Ensure your Digital Ocean Spaces endpoint URL is correct
+- Check if the bucket/space name exists and you have access
+- The application will automatically retry up to 3 times with exponential backoff
+
+### Database Lock Issues
+**Error:** `Database is locked. Another process may be using it`
+
+**Solutions:**
+- Ensure no other process is accessing the database file
+- Check if another container is running with the same database
+- Wait a few seconds and try again
+- The application uses a 30-second timeout to handle temporary locks
+
+### Empty CSV File
+**Error:** `CSV file is empty` or `CSV file contains no data rows`
+
+**Solutions:**
+- Verify the data generation process completed successfully
+- Check if the data.csv file was created properly
+- Ensure the dataloader container ran to completion before starting the plot container
+
+### File Not Found
+**Error:** `File not found: ...` or `FileNotFoundError`
+
+**Solutions:**
+- Ensure the file was created by the previous step
+- Check file permissions
+- Verify the working directory is correct
+- For Docker, ensure volumes are mounted correctly
+
+## Retry Behavior
+
+The application includes automatic retry logic for network operations to handle transient failures:
+
+### S3 Operations (Upload/Download)
+- **Max Attempts:** 3
+- **Retry Strategy:** Exponential backoff
+- **Timeouts:** 
+  - Connect timeout: 10 seconds
+  - Read timeout: 30 seconds
+- **Backoff Schedule:**
+  - 1st retry: Wait 1 second (2^0)
+  - 2nd retry: Wait 2 seconds (2^1)
+  - 3rd attempt: Final attempt
+
+### Example Retry Behavior:
+```
+2025-01-15 10:00:00 - ERROR - S3 upload attempt 1/3 failed - Code: RequestTimeout
+2025-01-15 10:00:00 - INFO - Retrying in 1 seconds...
+2025-01-15 10:00:01 - ERROR - S3 upload attempt 2/3 failed - Code: RequestTimeout
+2025-01-15 10:00:01 - INFO - Retrying in 2 seconds...
+2025-01-15 10:00:03 - INFO - Successfully uploaded data.csv to my-space
+```
+
+## Cleanup Behavior
+
+### Temporary Files
+The application automatically cleans up temporary files to prevent disk space issues:
+
+**Dataloader:**
+- Removes expectation test files after uploading to S3
+- Restores original working directory on exit
+
+**Timeseries Plot:**
+- Removes downloaded CSV files after loading into database
+- Removes generated plot PNG files after uploading to S3
+- Cleanup occurs even if errors occur (using finally blocks)
+
+### Database Files
+Database files (`timeseries_data.db`) persist across runs to maintain historical data. To reset:
+```bash
+# Remove database file to start fresh
+rm timeseries_data.db
+```
+
+## Logging Configuration
+
+### Default Logging
+Both components use Python's standard logging with INFO level by default:
+```python
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+```
+
+### Adjusting Log Level
+For more verbose output, set DEBUG level before running:
+```bash
+# In your Python code
+logging.basicConfig(level=logging.DEBUG)
+```
+
+Or use environment variable:
+```bash
+export LOG_LEVEL=DEBUG
+python main.py
+```
+
+### Log Output Examples
+
+**Successful Run:**
+```
+2025-01-15 10:00:00 - INFO - Starting data creation process
+2025-01-15 10:01:00 - INFO - Uploading data.csv to object storage
+2025-01-15 10:01:02 - INFO - Successfully uploaded data.csv to my-space
+2025-01-15 10:01:02 - INFO - Cleaned up temporary file: expectation_dataframe_at_columns_2025-01-15_10-00-00
+```
+
+**With Retries:**
+```
+2025-01-15 10:00:00 - ERROR - S3 upload attempt 1/3 failed - Code: ServiceUnavailable, Message: Service temporarily unavailable
+2025-01-15 10:00:00 - INFO - Retrying in 1 seconds...
+2025-01-15 10:00:01 - INFO - Successfully uploaded data.csv to my-space
+```
+
+### Database Operation Logs
+```
+2025-01-15 10:00:00 - INFO - Database initialized successfully with indexes
+2025-01-15 10:00:05 - INFO - Downloading data.csv from S3
+2025-01-15 10:00:07 - INFO - Successfully downloaded data.csv from my-space
+2025-01-15 10:00:08 - INFO - Inserted 150 new records (skipped 50 duplicates)
+2025-01-15 10:00:08 - INFO - Cleaned up downloaded file: data.csv
+2025-01-15 10:00:10 - INFO - Successfully queried 200 records from database
+```
+
+## Performance Considerations
+
+### Large Datasets
+For large CSV files (>10,000 rows), the application uses chunked loading:
+- Default chunk size: 10,000 rows
+- Reduces memory usage
+- Provides progress logging
+
+### Database Indexes
+Automatically creates indexes on (x, y) columns for faster duplicate detection.
+
+### Connection Pooling
+Uses context managers to ensure proper connection cleanup and prevent connection leaks.  
