@@ -6,11 +6,41 @@ import os
 import glob as glob
 import great_expectations as ge
 from mylib.dataloader import upload_data_spaces
+import logging
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
+
+def validate_env_vars():
+    """Validate required environment variables are set
+    
+    Returns
+    -------
+    Boolean True/False
+    True if all required environment variables are set.
+    False if any required environment variables are missing.
+    
+    """
+    required_vars = ['ENDPOINT_URL', 'SECRET_KEY', 'SPACES_ID', 'SPACES_NAME']
+    missing = [var for var in required_vars if not os.getenv(var)]
+    if missing:
+        error_msg = f"Missing required environment variables: {', '.join(missing)}"
+        logger.error(error_msg)
+        raise EnvironmentError(error_msg)
+    return True
+
 
 # make the data directory if it doesn't exist
 if not os.path.exists("data/"):
     os.makedirs("data/")
 
+# Save original working directory for context preservation
+original_cwd = os.getcwd()
 # fix the working directory remove this and it won't work
 os.chdir("data/")
 
@@ -47,7 +77,7 @@ def create_dataframe(timer_interval=60):
         test = 0
         y = np.random.randn()
         datastream = {"y": y}
-        df = df.append(datastream, ignore_index=True)
+        df = pd.concat([df, pd.DataFrame([datastream])], ignore_index=True)
         df.to_csv("data.csv", index_label="x")
         print(df)
         if test == 1 or time.time() > timeout:
@@ -75,16 +105,60 @@ def write_test_expectations():
 
 
 if __name__ == "__main__":
-    create_dataframe(timer_interval=60)
-    time.sleep(62)
-    callback_string1 = "Uploaded data to object storage {}".format(
-        upload_data_spaces("data.csv")
-    )
-    print(callback_string1)
-    print("Checking great data expectations for project")
-    write_test_expectations()
-    path_run_df_expectations = glob.glob("expectation*")[0]
-    callback_string2 = "Uploaded data expectations to object storage {}".format(
-        upload_data_spaces(path_run_df_expectations)
-    )
-    print(callback_string2)
+    temp_files = []
+    try:
+        # Validate environment variables at startup
+        validate_env_vars()
+        
+        logger.info("Starting data creation process")
+        create_dataframe(timer_interval=60)
+        time.sleep(62)
+        
+        # Validate file exists before upload
+        data_file = "data.csv"
+        if not os.path.isfile(data_file):
+            raise FileNotFoundError(f"Data file '{data_file}' not found")
+        
+        logger.info(f"Uploading {data_file} to object storage")
+        upload_result = upload_data_spaces(data_file)
+        if not upload_result:
+            raise RuntimeError(f"Failed to upload {data_file} to object storage")
+        callback_string1 = f"Uploaded data to object storage {upload_result}"
+        print(callback_string1)
+        
+        logger.info("Checking great data expectations for project")
+        print("Checking great data expectations for project")
+        write_test_expectations()
+        
+        # Fix fragile glob pattern with proper error handling
+        expectation_files = glob.glob("expectation*")
+        if not expectation_files:
+            raise FileNotFoundError("No expectation files found matching pattern 'expectation*'")
+        path_run_df_expectations = expectation_files[0]
+        temp_files.append(path_run_df_expectations)
+        
+        logger.info(f"Uploading {path_run_df_expectations} to object storage")
+        upload_result2 = upload_data_spaces(path_run_df_expectations)
+        if not upload_result2:
+            raise RuntimeError(f"Failed to upload {path_run_df_expectations} to object storage")
+        callback_string2 = f"Uploaded data expectations to object storage {upload_result2}"
+        print(callback_string2)
+        
+    except Exception as e:
+        logger.error(f"Error in main execution: {e}")
+        raise
+    finally:
+        # Cleanup temporary files
+        for temp_file in temp_files:
+            try:
+                if os.path.isfile(temp_file):
+                    os.remove(temp_file)
+                    logger.info(f"Cleaned up temporary file: {temp_file}")
+            except Exception as e:
+                logger.warning(f"Failed to cleanup {temp_file}: {e}")
+        
+        # Restore original working directory
+        try:
+            os.chdir(original_cwd)
+        except Exception as e:
+            logger.warning(f"Failed to restore original working directory: {e}")

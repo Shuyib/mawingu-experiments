@@ -1,7 +1,35 @@
 import boto3
 import logging
 from botocore.exceptions import ClientError
+from botocore.config import Config
 import os
+import time
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
+
+def validate_env_vars():
+    """Validate required environment variables are set
+    
+    Returns
+    -------
+    Boolean True/False
+    True if all required environment variables are set.
+    False if any required environment variables are missing.
+    
+    """
+    required_vars = ['ENDPOINT_URL', 'SECRET_KEY', 'SPACES_ID', 'SPACES_NAME']
+    missing = [var for var in required_vars if not os.getenv(var)]
+    if missing:
+        error_msg = f"Missing required environment variables: {', '.join(missing)}"
+        logger.error(error_msg)
+        return False
+    return True
 
 
 def download_file_s3(filename):
@@ -27,6 +55,21 @@ def download_file_s3(filename):
     download_file_s3(chowder.txt) downloads a file in the available folder chowder.txt
 
     """
+    # Validate environment variables
+    if not validate_env_vars():
+        logger.error("Cannot proceed with download: missing environment variables")
+        return False
+    
+    # Configure retry logic with exponential backoff
+    config = Config(
+        retries={
+            'max_attempts': 3,
+            'mode': 'standard'
+        },
+        connect_timeout=10,
+        read_timeout=30
+    )
+    
     os.getcwd()
     session = boto3.session.Session()  # initiate session
     # use aws sdk to define credentials to access service
@@ -36,13 +79,43 @@ def download_file_s3(filename):
         region_name="ams3",
         aws_access_key_id=os.getenv("SPACES_ID"),
         aws_secret_access_key=os.getenv("SECRET_KEY"),
+        config=config
     )
-    try:
-        client.download_file(os.getenv("SPACES_NAME"), filename, filename)
-    except ClientError as e:
-        logging.error(e)
-        return False
-    return True
+    
+    max_retries = 3
+    for attempt in range(max_retries):
+        try:
+            client.download_file(os.getenv("SPACES_NAME"), filename, filename)
+            logger.info(f"Successfully downloaded {filename} from {os.getenv('SPACES_NAME')}")
+            
+            # Validate file exists after download
+            if not os.path.isfile(filename):
+                raise FileNotFoundError(f"Downloaded file {filename} not found")
+            
+            return True
+        except ClientError as e:
+            error_code = e.response.get('Error', {}).get('Code', 'Unknown')
+            error_msg = e.response.get('Error', {}).get('Message', str(e))
+            logger.error(f"S3 download attempt {attempt + 1}/{max_retries} failed - Code: {error_code}, Message: {error_msg}")
+            
+            if attempt < max_retries - 1:
+                # Exponential backoff
+                wait_time = 2 ** attempt
+                logger.info(f"Retrying in {wait_time} seconds...")
+                time.sleep(wait_time)
+            else:
+                logger.error(f"Failed to download {filename} after {max_retries} attempts")
+                return False
+        except Exception as e:
+            logger.error(f"Unexpected error downloading {filename}: {e}")
+            if attempt < max_retries - 1:
+                wait_time = 2 ** attempt
+                logger.info(f"Retrying in {wait_time} seconds...")
+                time.sleep(wait_time)
+            else:
+                return False
+    
+    return False
 
 
 def upload_data_spaces(filename):
@@ -67,6 +140,26 @@ def upload_data_spaces(filename):
     -------
     upload_data_spaces(chowder.txt) uploads a file in the available folder chowder.txt
     """
+    # Validate environment variables
+    if not validate_env_vars():
+        logger.error("Cannot proceed with upload: missing environment variables")
+        return False
+    
+    # Validate file exists before upload
+    if not os.path.isfile(filename):
+        logger.error(f"File not found: {filename}")
+        return False
+    
+    # Configure retry logic with exponential backoff
+    config = Config(
+        retries={
+            'max_attempts': 3,
+            'mode': 'standard'
+        },
+        connect_timeout=10,
+        read_timeout=30
+    )
+    
     session = boto3.session.Session()
     client = session.client(
         "s3",
@@ -74,10 +167,35 @@ def upload_data_spaces(filename):
         region_name="ams3",
         aws_access_key_id=os.getenv("SPACES_ID"),
         aws_secret_access_key=os.getenv("SECRET_KEY"),
+        config=config
     )
-    try:
-        client.upload_file(filename, os.getenv("SPACES_NAME"), filename)
-    except ClientError as e:
-        logging.error(e)
-        return False
-    return True
+    
+    max_retries = 3
+    for attempt in range(max_retries):
+        try:
+            client.upload_file(filename, os.getenv("SPACES_NAME"), filename)
+            logger.info(f"Successfully uploaded {filename} to {os.getenv('SPACES_NAME')}")
+            return True
+        except ClientError as e:
+            error_code = e.response.get('Error', {}).get('Code', 'Unknown')
+            error_msg = e.response.get('Error', {}).get('Message', str(e))
+            logger.error(f"S3 upload attempt {attempt + 1}/{max_retries} failed - Code: {error_code}, Message: {error_msg}")
+            
+            if attempt < max_retries - 1:
+                # Exponential backoff
+                wait_time = 2 ** attempt
+                logger.info(f"Retrying in {wait_time} seconds...")
+                time.sleep(wait_time)
+            else:
+                logger.error(f"Failed to upload {filename} after {max_retries} attempts")
+                return False
+        except Exception as e:
+            logger.error(f"Unexpected error uploading {filename}: {e}")
+            if attempt < max_retries - 1:
+                wait_time = 2 ** attempt
+                logger.info(f"Retrying in {wait_time} seconds...")
+                time.sleep(wait_time)
+            else:
+                return False
+    
+    return False
