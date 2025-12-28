@@ -14,6 +14,6 @@ def create_dataframe():
         time.sleep(
             time_interval
         )  # based on the time.sleep method, replace time interval with int
-        df = df.append(datastream, ignore_index=True)
+        df = pd.concat([df, pd.DataFrame([datastream])], ignore_index=True)
         df.to_csv("data/data.csv", index_label="x")
         assert df.shape[1] == 2
