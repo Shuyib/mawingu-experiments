@@ -32,10 +32,6 @@ def validate_env_vars():
     return True
 
 
-# Validate environment variables at module level
-validate_env_vars()
-
-
 def upload_data_spaces(filename):
     """helper that allows you to upload data to object storage specifically Digital Ocean Spaces
 

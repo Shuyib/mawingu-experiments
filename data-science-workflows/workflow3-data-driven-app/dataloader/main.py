@@ -35,9 +35,6 @@ def validate_env_vars():
     return True
 
 
-# Validate environment variables at startup
-validate_env_vars()
-
 # make the data directory if it doesn't exist
 if not os.path.exists("data/"):
     os.makedirs("data/")
@@ -110,6 +107,9 @@ def write_test_expectations():
 if __name__ == "__main__":
     temp_files = []
     try:
+        # Validate environment variables at startup
+        validate_env_vars()
+        
         logger.info("Starting data creation process")
         create_dataframe(timer_interval=60)
         time.sleep(62)

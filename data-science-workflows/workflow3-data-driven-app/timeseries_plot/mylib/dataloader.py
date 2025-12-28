@@ -32,10 +32,6 @@ def validate_env_vars():
     return True
 
 
-# Validate environment variables at module level
-validate_env_vars()
-
-
 def download_file_s3(filename):
     """Helper function that allows you to download data from object storage specifically S3 by providing the filename
 
